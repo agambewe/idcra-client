@@ -33,7 +33,7 @@ const theme = createMuiTheme({
 const client = new ApolloClient({
   link: ApolloLink.from([
     createHttpLink({
-      uri: 'http://idcra.radityakertiyasa.com/query',
+      uri: 'https://idcra.radityakertiyasa.com/query',
       headers: {
         Authorization: cookie.get('token') ? `Bearer ${cookie.get('token') || ''}` : undefined,
       },

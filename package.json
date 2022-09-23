@@ -29,7 +29,7 @@
     "test": "react-scripts test --env=jsdom",
     "deploy": "surge build idcra-client.surge.sh",
     "eject": "react-scripts eject",
-    "codegen:sync": "apollo-codegen introspect-schema http://idcra.radityakertiyasa.com/query --output schema.json",
+    "codegen:sync": "apollo-codegen introspect-schema https://idcra.radityakertiyasa.com/query --output schema.json",
     "codegen:run": "apollo-codegen generate src/Fragments/*.js src/Pages/**/*.js --schema schema.json --tag-name gql --target flow --output operation-result-types.flow.js --add-typename"
   },
   "devDependencies": {

@@ -70,7 +70,7 @@ class LoginPage extends Component<
         const {
           data: {access_token: accessToken},
         } = await axios.post(
-          `http://idcra.radityakertiyasa.com/login`,
+          `https://idcra.radityakertiyasa.com/login`,
           {},
           {
             auth: {
