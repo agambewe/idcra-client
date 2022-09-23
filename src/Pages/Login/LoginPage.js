@@ -70,7 +70,7 @@ class LoginPage extends Component<
         const {
           data: {access_token: accessToken},
         } = await axios.post(
-          `http://idcra.radityakertiyasa.com:3000/login`,
+          `http://idcra.radityakertiyasa.com/login`,
           {},
           {
             auth: {
@@ -95,7 +95,7 @@ class LoginPage extends Component<
       <CssBaseline />
       <main className={this.props.classes.layout}>
         <Paper className={this.props.classes.paper}>
-          <img style={{width: '100%'}} src={require('../Home/logo-idcra.png')} />
+          <img style={{width: '100%'}} src={require('../Home/logo-idcra-vol-2.png')} />
           <br />
           <Typography variant="headline">Login</Typography>
           <form className={this.props.classes.form}>
