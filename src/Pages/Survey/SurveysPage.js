@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -141,6 +142,10 @@ const outputMap: Map<string, Output> = new Map([
 ]);
 
 export default class SurveysPage extends React.Component<{}> {
+  handleDownloadPDF = id => {
+    console.log(id);
+    window.open('https://idcra.radityakertiyasa.com/reports/surveys/' + id + '.pdf');
+  };
   render = () => (
     <StudentQuery
       query={StudentQuery.query}
@@ -176,9 +181,18 @@ export default class SurveysPage extends React.Component<{}> {
                     return (
                       <Paper key={edge.cursor} style={{marginBottom: 8}}>
                         <Toolbar>
-                          <Typography variant="title">
+                          <Typography variant="title" style={{flexGrow: 1}}>
                             {moment(edge.node.createdAt).format('D MMMM YYYY')}
                           </Typography>
+                          <Button
+                            onClick={(e: SyntheticEvent<HTMLButtonElement>) => {
+                              this.handleDownloadPDF(edge.node.id);
+                            }}
+                            variant="contained"
+                            color="primary"
+                          >
+                            Download PDF
+                          </Button>
                         </Toolbar>
                         <BarChart
                           width={280}
@@ -350,6 +364,7 @@ export default class SurveysPage extends React.Component<{}> {
                             </Value>
                           </div>
                         ) : null}
+                        <br />
                       </Paper>
                     );
                   })
