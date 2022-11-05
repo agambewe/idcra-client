@@ -1,6 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import linkState from 'linkstate';
+import { SNACKBAR } from '../../Constant/constant';
+import { withStyles } from '@material-ui/core/styles/';
 import {
   Button,
   CssBaseline,
@@ -11,9 +14,6 @@ import {
   Typography,
 } from '@material-ui/core/';
 import CustomSnackbar from '../../Common/Snackbar';
-import { SNACKBAR } from '../../Constant/constant';
-import { withStyles } from '@material-ui/core/styles/';
-import linkState from 'linkstate';
 import RegisterMutation from './RegisterMutation';
 
 
