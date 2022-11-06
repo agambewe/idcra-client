@@ -28,7 +28,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
 } from '@material-ui/core/';
 import SchoolsQuery from '../../Queries/SchoolQuery';
 import StudentsQuery from '../../Queries/StudentsQuery';
@@ -111,7 +111,7 @@ class StudentPage extends React.Component<
                     <Icon>format_list_numbered</Icon>
                   </IconButton>
                 </Link>
-                <Link to={ `/surveys/${node.id}` }>
+                <Link to={ `/reports/${node.id}` }>
                   <IconButton aria-label='Report'>
                     <Icon>bar_chart</Icon>
                   </IconButton>

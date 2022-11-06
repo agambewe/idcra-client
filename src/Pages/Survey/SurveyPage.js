@@ -295,74 +295,147 @@ class SurveyPage extends React.Component<
           <DiagnosisAndActionsQuery query={ DiagnosisAndActionsQuery.query } variables={ { first: 10 } }>
             { ({ data: DnAData, loading: DnALoading }) => (
               <div style={ { display: 'flex', flexDirection: 'column' } }>
-                <div style={ { display: 'flex', justifyContent: 'center' } }>
-                  <Typography variant='title'>DMF-T</Typography>
-                </div>
-                <div style={ { display: 'flex', justifyContent: 'center', flexDirection: 'column' } }>
-                  <div style={ { display: 'flex', flexDirection: 'column', padding: 24 } }>
-                    <TextField
-                      id='d'
-                      label='d'
-                      type='number'
-                      value={ this.state.lowerD }
-                      onChange={ this.setInput('number', 'lowerD') }
-                      margin='normal'
-                    />
-                    <TextField
-                      id='e'
-                      label='e'
-                      type='number'
-                      value={ this.state.lowerE }
-                      onChange={ this.setInput('number', 'lowerE') }
-                      margin='normal'
-                    />
-                    <TextField
-                      id='f'
-                      label='f'
-                      type='number'
-                      value={ this.state.lowerF }
-                      onChange={ this.setInput('number', 'lowerF') }
-                      margin='normal'
-                    />
+                <div>
+                  <div style={ { display: 'flex', justifyContent: 'center', flexDirection: 'column' } }>
+                    <Typography variant='title'>DMF-T</Typography>
+                    <div style={ { display: 'flex', flexDirection: 'column', padding: 24 } }>
+                      <TextField
+                        id='d'
+                        label='d'
+                        type='number'
+                        value={ this.state.lowerD }
+                        onChange={ this.setInput('number', 'lowerD') }
+                        margin='normal'
+                      />
+                      <TextField
+                        id='e'
+                        label='e'
+                        type='number'
+                        value={ this.state.lowerE }
+                        onChange={ this.setInput('number', 'lowerE') }
+                        margin='normal'
+                      />
+                      <TextField
+                        id='f'
+                        label='f'
+                        type='number'
+                        value={ this.state.lowerF }
+                        onChange={ this.setInput('number', 'lowerF') }
+                        margin='normal'
+                      />
+                    </div>
+                    <div style={ { display: 'flex', flexDirection: 'column', padding: 24 } }>
+                      <TextField
+                        id='D'
+                        label='D'
+                        type='number'
+                        value={ this.state.upperD }
+                        onChange={ this.setInput('number', 'upperD') }
+                        margin='normal'
+                      />
+                      <TextField
+                        id='M'
+                        label='M'
+                        type='number'
+                        value={ this.state.upperM }
+                        onChange={ this.setInput('number', 'upperM') }
+                        margin='normal'
+                      />
+                      <TextField
+                        id='F'
+                        label='F'
+                        type='number'
+                        value={ this.state.upperF }
+                        onChange={ this.setInput('number', 'upperF') }
+                        margin='normal'
+                      />
+                    </div>
                   </div>
-                  <div style={ { display: 'flex', flexDirection: 'column', padding: 24 } }>
-                    <TextField
-                      id='D'
-                      label='D'
-                      type='number'
-                      value={ this.state.upperD }
-                      onChange={ this.setInput('number', 'upperD') }
-                      margin='normal'
-                    />
-                    <TextField
-                      id='M'
-                      label='M'
-                      type='number'
-                      value={ this.state.upperM }
-                      onChange={ this.setInput('number', 'upperM') }
-                      margin='normal'
-                    />
-                    <TextField
-                      id='F'
-                      label='F'
-                      type='number'
-                      value={ this.state.upperF }
-                      onChange={ this.setInput('number', 'upperF') }
-                      margin='normal'
-                    />
-                  </div>
-                </div>
-                <div style={ { display: 'flex', justifyContent: 'center' } }>
-                  <Typography variant='title'>Preventive and Curative</Typography>
-                </div>
-                <div style={ { display: 'flex', justifyContent: 'center', flexDirection: 'column' } }>
-                  <div style={ { display: 'flex', flexDirection: 'column' } }>
-                    { Array.from(this.state.cases.entries()).map(
-                      ([toothNumber: number, DnAID: string]) => {
+                  <div style={ { display: 'flex', justifyContent: 'center', flexDirection: 'column' } }>
+                    <Typography variant='title'>Preventive and Curative</Typography>
+                    <div style={ { display: 'flex', flexDirection: 'column' } }>
+                      { Array.from(this.state.cases.entries()).map(
+                        ([toothNumber: number, DnAID: string]) => {
                         return (
-                    <div>
+                      <div>
+                        <div
+                          key={ toothNumber }
+                          style={ {
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'baseline',
+                            justifyContent: 'space-evenly',
+                          } }
+                        >
+                          <TextField
+                            id={ `tooth-number-${toothNumber}` }
+                            label='Tooth Number'
+                            value={ toothNumber }
+                            type='number'
+                            margin='normal'
+                          />
+                          <FormControl style={ { minWidth: 200, margin: 10 } }>
+                            <InputLabel htmlFor='diagnosis'>Diagnosis</InputLabel>
+                            <Select
+                              inputProps={ {
+                                name: `diagnosis-${toothNumber}`,
+                                id: `diagnosis-${toothNumber}`,
+                              } }
+                              onChange={ e => {
+                                this.setState(state => ({
+                                  cases: state.cases.set(toothNumber, e.target.value),
+                                }));
+                              } }
+                              value={ DnAID }
+                            >
+                              { DnALoading ? (
+                                <MenuItem value=''>
+                                  <em>Loading..</em>
+                                </MenuItem>
+                              ) : null }
+                              { DnAData &&
+                                DnAData.diagnosisAndActions &&
+                                DnAData.diagnosisAndActions.edges
+                                ? DnAData.diagnosisAndActions.edges.map(edge => {
+                                  if (!edge || !edge.node) return null;
+                                  const { node } = edge;
+                                  return (
+                                    <MenuItem key={ node.id } value={ node.id }>
+                                      { node.diagnosis }
+                                    </MenuItem>
+                                  );
+                                })
+                                : null }
+                            </Select>
+                          </FormControl>
+                        </div>
+                        <TextField
+                          disabled
+                          value={ (() => {
+                            if (
+                              DnAData &&
+                              DnAData.diagnosisAndActions &&
+                              DnAData.diagnosisAndActions.edges
+                            ) {
+                              const edge = DnAData.diagnosisAndActions.edges.find(
+                                edge => edge && edge.node && edge.node.id === DnAID
+                              );
+                              if (edge && edge.node) {
+                                return edge.node.action;
+                              }
+                            }
+                            return 'No Action';
+                          })() }
+                          id='action'
+                          label='Action'
+                          margin='normal'
+                        />
+                      </div>
+                      );
+                      }
+                    )}
+
                       <div
-                        key={ toothNumber }
                         style={ {
                           display: 'flex',
                           flexDirection: 'row',
@@ -371,102 +444,27 @@ class SurveyPage extends React.Component<
                         } }
                       >
                         <TextField
-                          id={ `tooth-number-${toothNumber}` }
+                          id='init-tooth-number'
                           label='Tooth Number'
-                          value={ toothNumber }
+                          value={ this.state.toothNumberInput }
+                          onChange={ this.setInput('number', 'toothNumberInput') }
                           type='number'
                           margin='normal'
                         />
-                        <FormControl style={ { minWidth: 200, margin: 10 } }>
-                          <InputLabel htmlFor='diagnosis'>Diagnosis</InputLabel>
-                          <Select
-                            inputProps={ {
-                              name: `diagnosis-${toothNumber}`,
-                              id: `diagnosis-${toothNumber}`,
-                            } }
-                            onChange={ e => {
-                              this.setState(state => ({
-                                cases: state.cases.set(toothNumber, e.target.value),
-                              }));
-                            } }
-                            value={ DnAID }
-                          >
-                            { DnALoading ? (
-                              <MenuItem value=''>
-                                <em>Loading..</em>
-                              </MenuItem>
-                            ) : null }
-                            { DnAData &&
-                              DnAData.diagnosisAndActions &&
-                              DnAData.diagnosisAndActions.edges
-                              ? DnAData.diagnosisAndActions.edges.map(edge => {
-                                if (!edge || !edge.node) return null;
-                                const { node } = edge;
-                                return (
-                                  <MenuItem key={ node.id } value={ node.id }>
-                                    { node.diagnosis }
-                                  </MenuItem>
-                                );
-                              })
-                              : null }
-                          </Select>
-                        </FormControl>
+                        <Button
+                          style={ { marginLeft: 10 } }
+                          variant='contained'
+                          color='primary'
+                          onClick={ () => {
+                            this.setState(state => ({
+                              cases: state.cases.set(this.state.toothNumberInput, ''),
+                              toothNumberInput: 0,
+                            }));
+                          } }
+                        >
+                          Add case
+                        </Button>
                       </div>
-                      <TextField
-                        disabled
-                        value={ (() => {
-                          if (
-                            DnAData &&
-                            DnAData.diagnosisAndActions &&
-                            DnAData.diagnosisAndActions.edges
-                          ) {
-                            const edge = DnAData.diagnosisAndActions.edges.find(
-                              edge => edge && edge.node && edge.node.id === DnAID
-                            );
-                            if (edge && edge.node) {
-                              return edge.node.action;
-                            }
-                          }
-                          return 'No Action';
-                        })() }
-                        id='action'
-                        label='Action'
-                        margin='normal'
-                      />
-                    </div>
-                    );
-                      }
-                    )}
-
-                    <div
-                      style={ {
-                        display: 'flex',
-                        flexDirection: 'row',
-                        alignItems: 'baseline',
-                        justifyContent: 'space-evenly',
-                      } }
-                    >
-                      <TextField
-                        id='init-tooth-number'
-                        label='Tooth Number'
-                        value={ this.state.toothNumberInput }
-                        onChange={ this.setInput('number', 'toothNumberInput') }
-                        type='number'
-                        margin='normal'
-                      />
-                      <Button
-                        style={ { marginLeft: 10 } }
-                        variant='contained'
-                        color='primary'
-                        onClick={ () => {
-                          this.setState(state => ({
-                            cases: state.cases.set(this.state.toothNumberInput, ''),
-                            toothNumberInput: 0,
-                          }));
-                        } }
-                      >
-                        Add case
-                      </Button>
                     </div>
                   </div>
                 </div>
@@ -550,7 +548,7 @@ class SurveyPage extends React.Component<
           color='primary'
           onClick={ () => {
             // $FlowFixMe
-            this.props.history.push(`/surveys/${this.props.match.params.studentID}`);
+            this.props.history.push(`/reports/${this.props.match.params.studentID}`);
           } }
         >
           View Results
@@ -572,7 +570,7 @@ render = () => (
             is taking a survey
           </Typography>
         </Toolbar>
-        <Stepper activeStep={ this.state.activeSession } orientation='vertical'>
+        <Stepper activeStep={ this.state.activeSession } orientation='horizontal' style={ { overflowX: 'auto' } }>
           <Step>
             <StepLabel>Get Ready!</StepLabel>
           </Step>
@@ -594,7 +592,7 @@ render = () => (
         </div>
       </Paper>
     ) }
-  </StudentQuery>
+  </StudentQuery >
 );
 }
 

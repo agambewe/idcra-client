@@ -1,11 +1,16 @@
 // @flow
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import {
+  Paper,
+  Button,
+  Toolbar,
+  Typography,
+  Tabs,
+  Tab,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails
+} from '@material-ui/core/';
 import moment from 'moment-timezone';
 import { Value } from 'react-values';
 import {
@@ -171,8 +176,8 @@ export default class ReportsPage extends React.Component<{}> {
                     risk = 'medium';
                   const output = outputMap.get(risk);
                   return (
-                    <Paper key={ edge.cursor } style={ { marginBottom: 8 } }>
-                      <Toolbar>
+                    <ExpansionPanel key={ edge.cursor } style={ { marginBottom: 10 } } expandIcon={ <span>Test</span> }>
+                      <ExpansionPanelSummary>
                         <Typography variant='title' style={ { flexGrow: 1 } }>
                           { moment(edge.node.createdAt).format('D MMMM YYYY') }
                         </Typography>
@@ -182,182 +187,190 @@ export default class ReportsPage extends React.Component<{}> {
                           } }
                           variant='contained'
                           color='primary'
+                          style={ { padding: '8px 16px' } }
+
                         >
-                          Download PDF
+                          <span style={ { textAlign: 'center' } }>
+                            Download PDF
+                          </span>
                         </Button>
-                      </Toolbar>
-                      <BarChart
-                        width={ 280 }
-                        height={ 280 }
-                        data={ [
-                          {
-                            name: 'Risk',
-                            value: edge.node.subjectiveScore,
-                            label: `${edge.node.subjectiveScore}%`,
-                          },
-                        ] }
-                      >
-                        <XAxis dataKey='name'>
-                          <Label
-                            value='Subjective Caries Assessment'
-                            offset={ -2 }
-                            position='insideBottom'
-                          />
-                        </XAxis>
-                        <YAxis
-                          type='number'
-                          unit='%'
-                          ticks={ [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100] }
-                        />
-                        <Tooltip />
-                        <Bar
-                          dataKey='value'
-                          fill={ (() => {
-                            if (risk === 'low') return 'green';
-                            if (risk === 'medium') return 'orange';
-                            return 'red';
-                          })() }
-                        >
-                          <LabelList dataKey='label' position='top' />
-                        </Bar>
-                      </BarChart>
-                      <br />
-                      <BarChart
-                        width={ 280 }
-                        height={ 280 }
-                        data={ [
-                          {
-                            name: 'D',
-                            value: edge.node.upperD,
-                          },
-                          {
-                            name: 'M',
-                            value: edge.node.upperM,
-                          },
-                          {
-                            name: 'F',
-                            value: edge.node.upperF,
-                          },
-                        ] }
-                      >
-                        <XAxis dataKey='name'>
-                          <Label
-                            value='Objective Caries Assessment'
-                            offset={ -2 }
-                            position='insideBottom'
-                          />
-                        </XAxis>
-                        <YAxis type='number' />
-                        <Tooltip />
-                        <Bar dataKey='value' fill='red'>
-                          <LabelList position='top' />
-                        </Bar>
-                      </BarChart>
-                      <br />
-                      { output ? (
-                        <div style={ { padding: 24 } }>
-                          <Typography variant='headline'>Operator's Suggestions</Typography>
-                          <ul>
-                            { Object.keys(output.operator).map(key => (
-                              <li>
-                                <Typography>
-                                  { key.toUpperCase() }: { output.operator[key] }
-                                </Typography>
-                              </li>
-                            )) }
-                          </ul>
-                          <Typography variant='headline'>Parent's Suggestions</Typography>
-                          <Value defaultValue={ 0 }>
-                            { ({ value, set }) => (
-                              <div>
-                                <Tabs
-                                  value={ value }
-                                  onChange={ (_, index) => {
-                                    set(index);
-                                  } }
-                                  centered
-                                  indicatorColor='primary'
-                                  textColor='primary'
-                                >
-                                  <Tab label='reminder' />
-                                  <Tab label='guidance' />
-                                  <Tab label='supervision' />
-                                </Tabs>
-                                <div style={ { display: 'flex', justifyContent: 'center' } }>
-                                  { value === 0 ? (
-                                    <ul>
-                                      { output.parent.reminder.map(reminder => (
-                                        <li key={ reminder }>
-                                          <Typography>{ reminder }</Typography>
-                                        </li>
-                                      )) }
-                                    </ul>
-                                  ) : null }
-                                  { value === 1 ? (
-                                    <ul>
-                                      { output.parent.guidance.map(guidance => (
-                                        <li key={ guidance }>
-                                          <Typography>{ guidance }</Typography>
-                                        </li>
-                                      )) }
-                                    </ul>
-                                  ) : null }
-                                  { value === 2 ? (
-                                    <ul>
-                                      { output.parent.supervision.map(supervision => (
-                                        <li key={ supervision }>
-                                          <Typography>{ supervision }</Typography>
-                                        </li>
-                                      )) }
-                                    </ul>
-                                  ) : null }
-                                </div>
-                              </div>
-                            ) }
-                          </Value>
-                          <Typography variant='headline'>Teacher's Suggestions</Typography>
-                          <Value defaultValue={ 0 }>
-                            { ({ value, set }) => (
-                              <div>
-                                <Tabs
-                                  value={ value }
-                                  onChange={ (_, index) => {
-                                    set(index);
-                                  } }
-                                  centered
-                                  indicatorColor='primary'
-                                  textColor='primary'
-                                >
-                                  <Tab label='reminder' />
-                                  <Tab label='guidance' />
-                                </Tabs>
-                                <div style={ { display: 'flex', justifyContent: 'center' } }>
-                                  { value === 0 ? (
-                                    <ul>
-                                      { output.teacher.reminder.map(reminder => (
-                                        <li key={ reminder }>
-                                          <Typography>{ reminder }</Typography>
-                                        </li>
-                                      )) }
-                                    </ul>
-                                  ) : null }
-                                  { value === 1 ? (
-                                    <ul>
-                                      { output.teacher.guidance.map(guidance => (
-                                        <li key={ guidance }>
-                                          <Typography>{ guidance }</Typography>
-                                        </li>
-                                      )) }
-                                    </ul>
-                                  ) : null }
-                                </div>
-                              </div>
-                            ) }
-                          </Value>
+                      </ExpansionPanelSummary>
+                      <ExpansionPanelDetails>
+                        <div style={ { display: 'flex', flexDirection: 'column' } }>
+                          <BarChart
+                            width={ 280 }
+                            height={ 280 }
+                            data={ [
+                              {
+                                name: 'Risk',
+                                value: edge.node.subjectiveScore,
+                                label: `${edge.node.subjectiveScore}%`,
+                              },
+                            ] }
+                          >
+                            <XAxis dataKey='name'>
+                              <Label
+                                value='Subjective Caries Assessment'
+                                offset={ -2 }
+                                position='insideBottom'
+                              />
+                            </XAxis>
+                            <YAxis
+                              type='number'
+                              unit='%'
+                              ticks={ [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100] }
+                            />
+                            <Tooltip />
+                            <Bar
+                              dataKey='value'
+                              fill={ (() => {
+                                if (risk === 'low') return 'green';
+                                if (risk === 'medium') return 'orange';
+                                return 'red';
+                              })() }
+                            >
+                              <LabelList dataKey='label' position='top' />
+                            </Bar>
+                          </BarChart>
+                          <br />
+                          <BarChart
+                            width={ 280 }
+                            height={ 280 }
+                            data={ [
+                              {
+                                name: 'D',
+                                value: edge.node.upperD,
+                              },
+                              {
+                                name: 'M',
+                                value: edge.node.upperM,
+                              },
+                              {
+                                name: 'F',
+                                value: edge.node.upperF,
+                              },
+                            ] }
+                          >
+                            <XAxis dataKey='name'>
+                              <Label
+                                value='Objective Caries Assessment'
+                                offset={ -2 }
+                                position='insideBottom'
+                              />
+                            </XAxis>
+                            <YAxis type='number' />
+                            <Tooltip />
+                            <Bar dataKey='value' fill='red'>
+                              <LabelList position='top' />
+                            </Bar>
+                          </BarChart>
+                          <br />
+                          { output ? (
+                            <div style={ { padding: 24 } }>
+                              <Typography variant='headline'>Operator's Suggestions</Typography>
+                              <ul>
+                                { Object.keys(output.operator).map(key => (
+                                  <li>
+                                    <Typography>
+                                      { key.toUpperCase() }: { output.operator[key] }
+                                    </Typography>
+                                  </li>
+                                )) }
+                              </ul>
+                              <Typography variant='headline'>Parent's Suggestions</Typography>
+                              <Value defaultValue={ 0 }>
+                                { ({ value, set }) => (
+                                  <div>
+                                    <Tabs
+                                      value={ value }
+                                      onChange={ (_, index) => {
+                                        set(index);
+                                      } }
+                                      centered
+                                      indicatorColor='primary'
+                                      textColor='primary'
+                                    >
+                                      <Tab label='reminder' />
+                                      <Tab label='guidance' />
+                                      <Tab label='supervision' />
+                                    </Tabs>
+                                    <div style={ { display: 'flex', justifyContent: 'center' } }>
+                                      { value === 0 ? (
+                                        <ul>
+                                          { output.parent.reminder.map(reminder => (
+                                            <li key={ reminder }>
+                                              <Typography>{ reminder }</Typography>
+                                            </li>
+                                          )) }
+                                        </ul>
+                                      ) : null }
+                                      { value === 1 ? (
+                                        <ul>
+                                          { output.parent.guidance.map(guidance => (
+                                            <li key={ guidance }>
+                                              <Typography>{ guidance }</Typography>
+                                            </li>
+                                          )) }
+                                        </ul>
+                                      ) : null }
+                                      { value === 2 ? (
+                                        <ul>
+                                          { output.parent.supervision.map(supervision => (
+                                            <li key={ supervision }>
+                                              <Typography>{ supervision }</Typography>
+                                            </li>
+                                          )) }
+                                        </ul>
+                                      ) : null }
+                                    </div>
+                                  </div>
+                                ) }
+                              </Value>
+                              <Typography variant='headline'>Teacher's Suggestions</Typography>
+                              <Value defaultValue={ 0 }>
+                                { ({ value, set }) => (
+                                  <div>
+                                    <Tabs
+                                      value={ value }
+                                      onChange={ (_, index) => {
+                                        set(index);
+                                      } }
+                                      centered
+                                      indicatorColor='primary'
+                                      textColor='primary'
+                                    >
+                                      <Tab label='reminder' />
+                                      <Tab label='guidance' />
+                                    </Tabs>
+                                    <div style={ { display: 'flex', justifyContent: 'center' } }>
+                                      { value === 0 ? (
+                                        <ul>
+                                          { output.teacher.reminder.map(reminder => (
+                                            <li key={ reminder }>
+                                              <Typography>{ reminder }</Typography>
+                                            </li>
+                                          )) }
+                                        </ul>
+                                      ) : null }
+                                      { value === 1 ? (
+                                        <ul>
+                                          { output.teacher.guidance.map(guidance => (
+                                            <li key={ guidance }>
+                                              <Typography>{ guidance }</Typography>
+                                            </li>
+                                          )) }
+                                        </ul>
+                                      ) : null }
+                                    </div>
+                                  </div>
+                                ) }
+                              </Value>
+                            </div>
+                          ) : null }
+                          <br />
                         </div>
-                      ) : null }
-                      <br />
-                    </Paper>
+                      </ExpansionPanelDetails>
+                    </ExpansionPanel>
                   );
                 })
                 : null }
@@ -394,7 +407,8 @@ export default class ReportsPage extends React.Component<{}> {
             </div>
           ) }
         </ReportsQuery>
-      ) }
-    </StudentQuery>
+      )
+      }
+    </StudentQuery >
   );
 }

@@ -47,67 +47,6 @@ const NavigationLink = (props: {
   </Route>
 );
 
-const mainListItems = () => {
-  return (
-    <div>
-      { cookie.get('role') !== ROLES.PARENT &&
-        <NavigationLink to='/schools'>
-          { isActive => (
-            <ListItem button selected={ isActive }>
-              <ListItemIcon>
-                <Icon>school</Icon>
-              </ListItemIcon>
-              <ListItemText primary='Schools' />
-            </ListItem>
-          ) }
-        </NavigationLink>
-      }
-
-      <NavigationLink to='/students'>
-        { isActive => (
-          <ListItem button selected={ isActive }>
-            <ListItemIcon>
-              <Icon>people</Icon>
-            </ListItemIcon>
-            <ListItemText primary='Students' />
-          </ListItem>
-        ) }
-      </NavigationLink>
-      {/* { cookie.get('role') !== ROLES.PARENT &&
-      <NavigationLink to='/surveys'>
-        { isActive => (
-          <ListItem button selected={ isActive }>
-            <ListItemIcon>
-              <Icon>format_list_numbered</Icon>
-            </ListItemIcon>
-            <ListItemText primary='Surveys' />
-          </ListItem>
-        ) }
-      </NavigationLink>
-    } */}
-
-      { cookie.get('role') === ROLES.PARENT &&
-        <NavigationLink
-          // temporary hack
-          to={
-            cookie.get('studentId') ?
-              `/reports/${cookie.get('studentId')}` :
-              '/reports'
-          }>
-          { isActive => (
-            <ListItem button selected={ isActive }>
-              <ListItemIcon>
-                <Icon>bar_chart</Icon>
-              </ListItemIcon>
-              <ListItemText primary='Reports' />
-            </ListItem>
-          ) }
-        </NavigationLink>
-      }
-    </div >
-  )
-};
-
 const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     { ...rest }
@@ -135,26 +74,20 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: '0 8px',
+    background: IDCRA_THEME.APP_BAR,
     ...theme.mixins.toolbar,
   },
   appBar: {
     left: '0',
-    width: '98%',
+    width: '98vw',
     margin: '5px auto',
     borderRadius: '50px',
     background: IDCRA_THEME.APP_BAR,
+    color: IDCRA_THEME.TEXT,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
     }),
   },
   menuButton: {
@@ -169,8 +102,13 @@ const styles = theme => ({
   },
   drawerPaper: {
     position: 'relative',
-    whiteSpace: 'nowrap',
+    top: '8vh',
+    left: '2vw',
+    height: '100%',
+    maxHeight: '25vh',
     width: drawerWidth,
+    whiteSpace: 'nowrap',
+    borderRadius: '8px',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -190,9 +128,13 @@ const styles = theme => ({
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
+    height: '100%',
+  },
+  mainContent: {
+    width: '96vw',
+    height: '90vh',
     padding: theme.spacing.unit,
-    height: '100vh',
-    overflow: 'auto',
+    margin: '10px auto',
   },
   chartContainer: {
     marginLeft: -22,
@@ -202,17 +144,17 @@ const styles = theme => ({
   },
 });
 
-class Dashboard extends React.Component<{}, { open: boolean }> {
+class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
   state = {
-    open: false,
+    openDrawer: false,
   };
 
   handleDrawerOpen = () => {
-    this.setState({ open: true });
+    this.setState({ openDrawer: true });
   };
 
   handleDrawerClose = () => {
-    this.setState({ open: false });
+    this.setState({ openDrawer: false });
   };
 
   handleLogout = () => {
@@ -221,6 +163,71 @@ class Dashboard extends React.Component<{}, { open: boolean }> {
     cookie.remove('role');
     cookie.remove('studentId');
     window.location.href = '/login';
+  };
+
+  componentDidMount() {
+    this.setState({ openDrawer: true });
+  }
+
+  mainListItems = () => {
+    return (
+      <div>
+        { cookie.get('role') !== ROLES.PARENT &&
+          <NavigationLink to='/schools'>
+            { isActive => (
+              <ListItem button selected={ isActive } onClick={ () => this.setState({ openDrawer: false }) }>
+                <ListItemIcon>
+                  <Icon>school</Icon>
+                </ListItemIcon>
+                <ListItemText primary='Schools' />
+              </ListItem>
+            ) }
+          </NavigationLink>
+        }
+
+        <NavigationLink to='/students'>
+          { isActive => (
+            <ListItem button selected={ isActive } onClick={ () => this.setState({ openDrawer: false }) }>
+              <ListItemIcon>
+                <Icon>people</Icon>
+              </ListItemIcon>
+              <ListItemText primary='Students' />
+            </ListItem>
+          ) }
+        </NavigationLink>
+        {/* { cookie.get('role') !== ROLES.PARENT &&
+      <NavigationLink to='/surveys'>
+        { isActive => (
+          <ListItem button selected={ isActive }>
+            <ListItemIcon>
+              <Icon>format_list_numbered</Icon>
+            </ListItemIcon>
+            <ListItemText primary='Surveys' />
+          </ListItem>
+        ) }
+      </NavigationLink>
+    } */}
+
+        { cookie.get('role') === ROLES.PARENT &&
+          <NavigationLink
+            // temporary hack
+            to={
+              cookie.get('studentId') ?
+                `/reports/${cookie.get('studentId')}` :
+                '/reports'
+            }>
+            { isActive => (
+              <ListItem button selected={ isActive } onClick={ () => this.setState({ openDrawer: false }) }>
+                <ListItemIcon>
+                  <Icon>bar_chart</Icon>
+                </ListItemIcon>
+                <ListItemText primary='Reports' />
+              </ListItem>
+            ) }
+          </NavigationLink>
+        }
+      </div >
+    )
   };
 
   render() {
@@ -234,20 +241,20 @@ class Dashboard extends React.Component<{}, { open: boolean }> {
           <div className={ classes.root }>
             { cookie.get('token') ? (
               <AppBar
-                position="absolute"
+                position='absolute'
                 className={ classNames(
                   classes.appBar,
-                  cookie.get('token') && this.state.open && classes.appBarShift
+                  cookie.get('token') && this.state.openDrawer && classes.appBarShift
                 ) }
               >
-                <Toolbar disableGutters={ !this.state.open } className={ classes.toolbar }>
+                <Toolbar disableGutters={ !this.state.openDrawer } className={ classes.toolbar }>
                   <IconButton
                     color='inherit'
                     aria-label='Open drawer'
                     onClick={ this.handleDrawerOpen }
                     className={ classNames(
                       classes.menuButton,
-                      this.state.open && classes.menuButtonHidden
+                      this.state.openDrawer && classes.menuButtonHidden
                     ) }
                   >
                     <Icon>menu</Icon>
@@ -272,18 +279,20 @@ class Dashboard extends React.Component<{}, { open: boolean }> {
                 classes={ {
                   paper: classNames(
                     classes.drawerPaper,
-                    !this.state.open && classes.drawerPaperClose
+                    !this.state.openDrawer && classes.drawerPaperClose
                   ),
                 } }
-                open={ this.state.open }
+                BackdropProps={ { invisible: true } }
+                open={ this.state.openDrawer }
+                onClose={ () => this.setState({ openDrawer: false }) }
               >
                 <div className={ classes.toolbarIcon }>
-                  <IconButton onClick={ this.handleDrawerClose }>
-                    <Icon>chevron_left</Icon>
+                  <IconButton style={ { color: IDCRA_THEME.TEXT } } onClick={ this.handleDrawerClose }>
+                    <Icon>close</Icon>
                   </IconButton>
                 </div>
                 <Divider />
-                <List>{ mainListItems() }</List>
+                <List>{ this.mainListItems() }</List>
               </Drawer>
             ) : null }
             <main className={ classes.content }>
@@ -291,16 +300,18 @@ class Dashboard extends React.Component<{}, { open: boolean }> {
                 cookie.get('token') &&
                 <div className={ classes.appBarSpacer } />
               }
-              <Switch>
-                <PrivateRoute path='/' exact component={ HomePage } />
-                <PrivateRoute path='/schools' exact component={ SchoolPage } />
-                <PrivateRoute path='/schools/:schoolID/cost' exact component={ SchoolCostPage } />
-                <PrivateRoute path='/students' exact component={ StudentPage } />
-                <PrivateRoute path='/survey/:studentID' component={ SurveyPage } />
-                <PrivateRoute path='/reports/:studentID' component={ ReportsPage } />
-                <Route path='/login' component={ LoginPage } />
-                <Route path='/register' component={ RegisterPage } />
-              </Switch>
+              <div className={ classes.mainContent }>
+                <Switch>
+                  <PrivateRoute path='/' exact component={ HomePage } />
+                  <PrivateRoute path='/schools' exact component={ SchoolPage } />
+                  <PrivateRoute path='/schools/:schoolID/cost' exact component={ SchoolCostPage } />
+                  <PrivateRoute path='/students' exact component={ StudentPage } />
+                  <PrivateRoute path='/survey/:studentID' component={ SurveyPage } />
+                  <PrivateRoute path='/reports/:studentID' component={ ReportsPage } />
+                  <Route path='/login' component={ LoginPage } />
+                  <Route path='/register' component={ RegisterPage } />
+                </Switch>
+              </div>
             </main>
           </div>
         </React.Fragment>

@@ -84,11 +84,11 @@ class SchoolPage extends React.Component<
                   schoolsData.schools &&
                   schoolsData.schools.edges &&
                   schoolsData.schools.edges.length ? (
-                  schoolsData.schools.edges.map(edge => {
+                  schoolsData.schools.edges.map((edge, i) => {
                     if (!edge || !edge.node) return null;
                     const { node } = edge;
                     return (
-                      <ListItem>
+                      <ListItem key={ i }>
                         <ListItemText
                           primary={ node.name }
                           secondary={ moment(node.createdAt).format('D MMMM YYYY') }
