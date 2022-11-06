@@ -266,7 +266,6 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
                     <Button
                       onClick={ this.handleLogout }
                       variant='contained'
-                      color={ IDCRA_THEME.PRIMARY }
                       className={ classes.button }
                     >
                       Logout

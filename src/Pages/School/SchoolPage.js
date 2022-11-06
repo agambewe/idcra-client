@@ -56,7 +56,6 @@ class SchoolPage extends React.Component<
                   </FormControl>
                   <Button
                     variant='contained'
-                    color='primary'
                     style={ { marginLeft: 20 } }
                     disabled={ this.state.newSchoolName.length === 0 }
                     onClick={ (e: SyntheticEvent<HTMLButtonElement>) => {

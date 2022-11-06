@@ -238,7 +238,6 @@ class StudentPage extends React.Component<
                             </FormControl>
                             <Button
                               variant='contained'
-                              color='primary'
                               style={ { marginLeft: 20 } }
                               disabled={
                                 !this.state.activeSchoolId ||
@@ -314,7 +313,7 @@ class StudentPage extends React.Component<
                               </DialogContentText>
                             </DialogContent>
                             <DialogActions>
-                              <Button onClick={ this.handleCloseDialog } color='primary'>
+                              <Button onClick={ this.handleCloseDialog }>
                                 CANCEL
                               </Button>
                               <Button onClick={
@@ -341,7 +340,7 @@ class StudentPage extends React.Component<
                                     });
                                   }
                                 }
-                              } color='primary' autoFocus>
+                              } autoFocus>
                                 ADD
                               </Button>
                             </DialogActions>

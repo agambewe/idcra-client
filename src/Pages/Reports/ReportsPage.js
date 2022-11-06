@@ -186,7 +186,6 @@ export default class ReportsPage extends React.Component<{}> {
                             this.handleDownloadPDF(edge.node.id);
                           } }
                           variant='contained'
-                          color='primary'
                           style={ { padding: '8px 16px' } }
 
                         >

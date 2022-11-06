@@ -183,7 +183,7 @@ const SessionForm = (props: {
     <Step>
       <StepLabel>Selesai</StepLabel>
       <StepContent>
-        <Button variant='contained' color='primary' onClick={ props.onFinish }>
+        <Button variant='contained' onClick={ props.onFinish }>
           Next
         </Button>
       </StepContent>
@@ -254,7 +254,6 @@ class SurveyPage extends React.Component<
             <Typography>Make sure you are ready to start survey</Typography>
             <Button
               variant='contained'
-              color='primary'
               onClick={ () => {
                 this.setState({ activeSession: 1 });
               } }
@@ -454,7 +453,6 @@ class SurveyPage extends React.Component<
                         <Button
                           style={ { marginLeft: 10 } }
                           variant='contained'
-                          color='primary'
                           onClick={ () => {
                             this.setState(state => ({
                               cases: state.cases.set(this.state.toothNumberInput, ''),
@@ -475,7 +473,6 @@ class SurveyPage extends React.Component<
                         { (create, { loading: createSurveyLoading }) => (
                           <Button
                             variant='contained'
-                            color='primary'
                             onClick={ () => {
                               const { lowerD, lowerE, lowerF, upperD, upperM, upperF } = this.state;
                               const cases = Array.from(this.state.cases.entries()).map(
@@ -545,7 +542,6 @@ class SurveyPage extends React.Component<
         <Typography>Done!</Typography>
         <Button
           variant='contained'
-          color='primary'
           onClick={ () => {
             // $FlowFixMe
             this.props.history.push(`/reports/${this.props.match.params.studentID}`);
