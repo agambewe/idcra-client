@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@material-ui/core/';
 import CustomSnackbar from '../../Common/Snackbar';
-import RegisterMutation from './RegisterMutation';
+import RegisterMutation from '../../Mutations/RegisterMutation';
 
 
 const styles = theme => ({
@@ -98,21 +98,21 @@ class RegisterPage extends Component<
         <React.Fragment>
           <CssBaseline />
           <main className={ this.props.classes.layout }>
-            <Paper className={ this.props.classes.paper }>
-              {
-                this.state.inlineMessage.message &&
-                <CustomSnackbar
-                  open={ this.state.inlineMessage.show }
-                  close={ () => this.resetSnackbar() }
-                  contentStyle={ {
-                    backgroundColor: SNACKBAR.ERROR,
-                    width: '100%',
-                    borderRadius: '4px',
-                  } }
-                  message={ this.state.inlineMessage.message }
+            {
+              this.state.inlineMessage.message &&
+              <CustomSnackbar
+                open={ this.state.inlineMessage.show }
+                close={ () => this.resetSnackbar() }
+                contentStyle={ {
+                  backgroundColor: SNACKBAR.ERROR,
+                  width: '100%',
+                  borderRadius: '4px',
+                } }
+                message={ this.state.inlineMessage.message }
 
-                />
-              }
+              />
+            }
+            <Paper className={ this.props.classes.paper }>
               <img className={ this.props.classes.img } src={ require('../Home/logo-idcra-vol-2.png') } alt={ 'logo' } />
               <br />
               <Typography variant='headline'>REGISTER</Typography>
@@ -141,39 +141,40 @@ class RegisterPage extends Component<
                   variant='raised'
                   disabled={ this.state.email === '' || this.state.password === '' }
                   className={ this.props.classes.submit }
-                  onClick={ (e: SyntheticEvent<HTMLButtonElement>) => {
-                    e.preventDefault();
-                    if (this.state.email && this.state.password) {
-                      register({
-                        variables: {
-                          email: this.state.email,
-                          password: this.state.password,
-                        },
-                      }).then(() => {
-                        // $FlowFixMe
-                        this.props.history.push('/login');
-                      }).catch((err) => {
-                        if (err.message.includes('1062')) {
-                          const inlineMessage = {
-                            show: true,
-                            message: 'Username already exist!'
-                          };
+                  onClick={
+                    (e: SyntheticEvent<HTMLButtonElement>) => {
+                      e.preventDefault();
+                      if (this.state.email && this.state.password) {
+                        register({
+                          variables: {
+                            email: this.state.email,
+                            password: this.state.password,
+                          },
+                        }).then(() => {
+                          // $FlowFixMe
+                          this.props.history.push('/login');
+                        }).catch((err) => {
+                          if (err.message.includes('1062')) {
+                            const inlineMessage = {
+                              show: true,
+                              message: 'Username already exist!'
+                            };
 
-                          this.setState({ inlineMessage });
-                        }
-                      });
-                    } else {
-                      const inlineMessage = {
-                        show: true,
-                        message: 'Please fill out all the empty fields!'
-                      };
+                            this.setState({ inlineMessage });
+                          }
+                        });
+                      } else {
+                        const inlineMessage = {
+                          show: true,
+                          message: 'Please fill out all the empty fields!'
+                        };
 
-                      this.setState({
-                        loading: false,
-                        inlineMessage,
-                      });
-                    }
-                  } }
+                        this.setState({
+                          loading: false,
+                          inlineMessage,
+                        });
+                      }
+                    } }
                 >
                   { this.state.loading ? 'REGISTERING...' : 'REGISTER' }
                 </Button>

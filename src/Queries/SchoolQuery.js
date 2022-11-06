@@ -1,10 +1,9 @@
 // @flow
-import {Query} from 'react-apollo';
+import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import type {schools, schoolsVariables} from '../../../operation-result-types.flow';
-import User from '../../Fragments/User';
-import School from '../../Fragments/School';
-import PageInfo from '../../Fragments/PageInfo';
+import type { schools, schoolsVariables } from '../../operation-result-types.flow';
+import School from '../Fragments/School';
+import PageInfo from '../Fragments/PageInfo';
 
 export default class SchoolsQuery extends Query<schools, schoolsVariables> {
   static query = gql`

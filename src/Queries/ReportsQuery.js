@@ -1,11 +1,11 @@
 // @flow
-import {Query} from 'react-apollo';
+import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import type {surveys, surveysVariables} from '../../../operation-result-types.flow';
-import Survey from '../../Fragments/Survey';
-import PageInfo from '../../Fragments/PageInfo';
+import type { surveys, surveysVariables } from '../../operation-result-types.flow';
+import Survey from '../Fragments/Survey';
+import PageInfo from '../Fragments/PageInfo';
 
-export default class SurveysQuery extends Query<surveys, surveysVariables> {
+export default class ReportsQuery extends Query<surveys, surveysVariables> {
   static query = gql`
     query surveys($studentID: String!) {
       surveys(first: 10, studentID: $studentID) {

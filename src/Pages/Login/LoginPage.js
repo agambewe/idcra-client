@@ -147,21 +147,21 @@ class LoginPage extends Component<
     <React.Fragment>
       <CssBaseline />
       <main className={ this.props.classes.layout }>
-        <Paper className={ this.props.classes.paper }>
-          {
-            this.state.inlineMessage.message &&
-            <CustomSnackbar
-              open={ this.state.inlineMessage.show }
-              close={ () => this.resetSnackbar() }
-              contentStyle={ {
-                backgroundColor: SNACKBAR.ERROR,
-                width: '100%',
-                borderRadius: '4px',
-              } }
-              message={ this.state.inlineMessage.message }
+        {
+          this.state.inlineMessage.message &&
+          <CustomSnackbar
+            open={ this.state.inlineMessage.show }
+            close={ () => this.resetSnackbar() }
+            contentStyle={ {
+              backgroundColor: SNACKBAR.ERROR,
+              width: '100%',
+              borderRadius: '4px',
+            } }
+            message={ this.state.inlineMessage.message }
 
-            />
-          }
+          />
+        }
+        <Paper className={ this.props.classes.paper }>
           <img className={ this.props.classes.img } src={ require('../Home/logo-idcra-vol-2.png') } alt={ 'logo' } />
           <br />
           <Typography variant='headline'>LOGIN</Typography>

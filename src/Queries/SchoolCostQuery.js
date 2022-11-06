@@ -1,7 +1,7 @@
 // @flow
-import {Query} from 'react-apollo';
+import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
-import type {schoolCost, schoolCostVariables} from '../../../operation-result-types.flow';
+import type { schoolCost, schoolCostVariables } from '../operation-result-types.flow';
 
 export default class SchoolCostQuery extends Query<schoolCost, schoolCostVariables> {
   static query = gql`

@@ -10,6 +10,8 @@ export const IDCRA_THEME = {
   SECONDARY: '#745098',
   TERTIARY: '#B88FE1',
   TEXT: '#FFF',
+  APP_BAR: '#7272cc',
+  CARD_TITLE: '#7e7aaf',
 }
 
 export const SNACKBAR = {
@@ -20,5 +22,4 @@ export const ROLES = {
   ADMIN: 'ADMIN',
   SURVEYOR: 'SURVEYOR',
   PARENT: 'PARENT',
-
 }

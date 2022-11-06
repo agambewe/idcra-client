@@ -1,28 +1,13 @@
 // @flow
 import React from 'react';
-import {Link} from 'react-router-dom';
-import PropTypes from 'prop-types';
-import {withStyles} from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
-import IconButton from '@material-ui/core/IconButton';
-import Icon from '@material-ui/core/Icon';
 import Paper from '@material-ui/core/Paper';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Input from '@material-ui/core/Input';
-import Button from '@material-ui/core/Button';
-import moment from 'moment-timezone';
-import SchoolsQuery from './SchoolQuery';
-import linkState from 'linkstate';
-import CreateSchoolMutation from './CreateSchoolMutation';
-import SchoolCostQuery from './SchoolCostQuery';
+import SchoolCostQuery from '../../Queries/SchoolCostQuery';
 
 const styles = theme => ({
   root: {
@@ -46,37 +31,37 @@ class SchoolPage extends React.Component<
   };
   render = () => {
     // $FlowFixMe
-    const {classes} = this.props;
+    const { classes } = this.props;
     return (
       <SchoolCostQuery
-        query={SchoolCostQuery.query}
+        query={ SchoolCostQuery.query }
         // $FlowFixMe
-        variables={{schoolID: this.props.match.params.schoolID}}
+        variables={ { schoolID: this.props.match.params.schoolID } }
       >
-        {({data: schoolCostData}) => (
-          <Paper className={classes.root}>
+        { ({ data: schoolCostData }) => (
+          <Paper className={ classes.root }>
             <Toolbar>
-              <Typography variant="title" id="tableTitle">
-                Cost Breakdown - {schoolCostData && schoolCostData.school ? schoolCostData.school.name : '...'}
+              <Typography variant='title' id='tableTitle'>
+                Cost Breakdown - { schoolCostData && schoolCostData.school ? schoolCostData.school.name : '...' }
               </Typography>
             </Toolbar>
             <List>
-              {schoolCostData && schoolCostData.schoolCost ? (
+              { schoolCostData && schoolCostData.schoolCost ? (
                 schoolCostData.schoolCost.map(cost => {
                   return (
-                    <ListItem key={cost.description}>
-                      <ListItemText primary={cost.description} secondary={`IDR ${cost.cost}`} />
+                    <ListItem key={ cost.description }>
+                      <ListItemText primary={ cost.description } secondary={ `IDR ${cost.cost}` } />
                     </ListItem>
                   );
                 })
               ) : (
                 <ListItem>
-                  <ListItemText primary={'There is no school'} />
+                  <ListItemText primary={ 'There is no school' } />
                 </ListItem>
-              )}
+              ) }
             </List>
           </Paper>
-        )}
+        ) }
       </SchoolCostQuery>
     );
   };
