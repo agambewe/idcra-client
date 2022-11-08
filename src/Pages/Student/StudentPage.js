@@ -105,7 +105,7 @@ class StudentPage extends React.Component<
           />
           <ListItemSecondaryAction>
             { cookie.get('role') !== ROLES.PARENT ?
-              <React.Fragment>
+              <div>
                 <Link to={ `/survey/${node.id}` }>
                   <IconButton aria-label='Take Survey'>
                     <Icon>format_list_numbered</Icon>
@@ -116,7 +116,7 @@ class StudentPage extends React.Component<
                     <Icon>bar_chart</Icon>
                   </IconButton>
                 </Link>
-              </React.Fragment> :
+              </div> :
               <span>
                 <IconButton
                   disabled={ disableAddChildButton }

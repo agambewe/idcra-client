@@ -94,7 +94,7 @@ class SchoolPage extends React.Component<
                         />
                         <ListItemSecondaryAction>
                           <Link to={ `/schools/${node.id}/cost` }>
-                            <IconButton aria-label='Take Survey'>
+                            <IconButton aria-label='Cost'>
                               <Icon>monetization_on</Icon>
                             </IconButton>
                           </Link>
@@ -110,7 +110,8 @@ class SchoolPage extends React.Component<
               </List>
             </Paper>
           </div>
-        ) }
+        )
+        }
       </SchoolsQuery>
     );
   };

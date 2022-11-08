@@ -9,7 +9,6 @@ import {
   Drawer,
   AppBar,
   Toolbar,
-  Button,
   List,
   ListItem,
   ListItemIcon,
@@ -18,6 +17,7 @@ import {
   Typography,
   Divider,
   IconButton,
+  Tooltip
 } from '@material-ui/core/';
 import {
   BrowserRouter,
@@ -36,6 +36,7 @@ import StudentPage from './Pages/Student/StudentPage';
 import SurveyPage from './Pages/Survey/SurveyPage';
 import ReportsPage from './Pages/Reports/ReportsPage';
 import HomePage from './Pages/Home/HomePage';
+import StudentQuery from './Queries/StudentQuery';
 
 const NavigationLink = (props: {
   to: string,
@@ -66,9 +67,9 @@ const styles = theme => ({
   root: {
     display: 'flex',
   },
-  toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
-  },
+  // toolbar: {
+  //   paddingRight: 24, // keep right padding when drawer closed
+  // },
   toolbarIcon: {
     display: 'flex',
     alignItems: 'center',
@@ -101,11 +102,27 @@ const styles = theme => ({
     flexGrow: 1,
   },
   drawerPaper: {
-    position: 'relative',
-    top: '8vh',
+    overflowX: 'hidden',
+    position: 'absolute',
+    top: '10vh',
     left: '2vw',
-    height: '100%',
-    maxHeight: '25vh',
+    height: 'auto',
+    maxHeight: '50vh',
+    width: drawerWidth,
+    whiteSpace: 'nowrap',
+    borderRadius: '8px',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  rightDrawerPaper: {
+    overflowX: 'hidden',
+    position: 'absolute',
+    top: '10vh',
+    right: '2vw',
+    height: 'auto',
+    maxHeight: '50vh',
     width: drawerWidth,
     whiteSpace: 'nowrap',
     borderRadius: '8px',
@@ -115,7 +132,16 @@ const styles = theme => ({
     }),
   },
   drawerPaperClose: {
-    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing.unit * 7,
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing.unit * 9,
+    },
+  },
+  rightDrawerPaperClose: {
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -142,19 +168,33 @@ const styles = theme => ({
   tableContainer: {
     height: 320,
   },
+  listText: {
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis'
+  }
 });
 
 class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
   state = {
     openDrawer: false,
+    openrightDrawer: false,
   };
 
   handleDrawerOpen = () => {
     this.setState({ openDrawer: true });
   };
 
+  handleRightDrawerOpen = () => {
+    this.setState({ openRightDrawer: true });
+  };
+
   handleDrawerClose = () => {
     this.setState({ openDrawer: false });
+  };
+
+  handleRightDrawerClose = () => {
+    this.setState({ openRightDrawer: false });
   };
 
   handleLogout = () => {
@@ -191,6 +231,7 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
               <ListItemIcon>
                 <Icon>people</Icon>
               </ListItemIcon>
+
               <ListItemText primary='Students' />
             </ListItem>
           ) }
@@ -230,90 +271,164 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
     )
   };
 
+  rightListItem = (studentData) => {
+    const { classes } = this.props;
+    const userEmail = cookie.get('email');
+    const userName = userEmail.split('@');
+    const childName = (
+      studentData &&
+        studentData.student &&
+        studentData.student.hasOwnProperty('name') ? studentData.student.name : ''
+    );
+
+    return (
+      <div>
+        <ListItem>
+          <ListItemIcon>
+            <Icon>person</Icon>
+          </ListItemIcon>
+          <Tooltip title={ userName[0].toUpperCase() }>
+
+            <ListItemText className={ classes.listText } primary={ userName[0].toUpperCase() } />
+          </Tooltip>
+        </ListItem>
+        { cookie.get('role') === ROLES.PARENT && childName &&
+          <ListItem>
+            <ListItemIcon>
+              <Icon>people-alt</Icon>
+            </ListItemIcon>
+            <Tooltip title={ childName }>
+              <ListItemText className={ classes.listText } primary={ childName } />
+            </Tooltip>
+          </ListItem>
+        }
+        <ListItem button onClick={ this.handleLogout }>
+          <ListItemIcon>
+            <Icon>logout</Icon>
+          </ListItemIcon>
+          <ListItemText primary='Logout' />
+        </ListItem>
+      </div>
+    )
+  }
+
   render() {
     // $FlowFixMe
     const { classes } = this.props;
 
     return (
       <BrowserRouter>
-        <React.Fragment>
-          <CssBaseline />
-          <div className={ classes.root }>
-            { cookie.get('token') ? (
-              <AppBar
-                position='absolute'
-                className={ classNames(
-                  classes.appBar,
-                  cookie.get('token') && this.state.openDrawer && classes.appBarShift
-                ) }
-              >
-                <Toolbar disableGutters={ !this.state.openDrawer } className={ classes.toolbar }>
-                  <IconButton
-                    color='inherit'
-                    aria-label='Open drawer'
-                    onClick={ this.handleDrawerOpen }
+        <StudentQuery
+          query={ StudentQuery.query }
+          // $FlowFixMe
+          variables={ { id: cookie.get('studentId') } }
+        >
+          { ({ data: studentData, loading: studentLoading }) => (
+            <React.Fragment>
+              <CssBaseline />
+              <div className={ classes.root }>
+                { cookie.get('token') ? (
+                  <AppBar
+                    position='absolute'
                     className={ classNames(
-                      classes.menuButton,
-                      this.state.openDrawer && classes.menuButtonHidden
+                      classes.appBar,
+                      cookie.get('token') && this.state.openDrawer && classes.appBarShift
                     ) }
                   >
-                    <Icon>menu</Icon>
-                  </IconButton>
-                  <Typography variant='title' color='inherit' noWrap className={ classes.title }>
-                    IDCRA
-                  </Typography>
-                  { cookie.get('token') ? (
-                    <Button
-                      onClick={ this.handleLogout }
-                      variant='contained'
-                      className={ classes.button }
-                    >
-                      Logout
-                    </Button>
-                  ) : null }
-                </Toolbar>
-              </AppBar>) : null }
-            { cookie.get('token') ? (
-              <Drawer
-                classes={ {
-                  paper: classNames(
-                    classes.drawerPaper,
-                    !this.state.openDrawer && classes.drawerPaperClose
-                  ),
-                } }
-                BackdropProps={ { invisible: true } }
-                open={ this.state.openDrawer }
-                onClose={ () => this.setState({ openDrawer: false }) }
-              >
-                <div className={ classes.toolbarIcon }>
-                  <IconButton style={ { color: IDCRA_THEME.TEXT } } onClick={ this.handleDrawerClose }>
-                    <Icon>close</Icon>
-                  </IconButton>
-                </div>
-                <Divider />
-                <List>{ this.mainListItems() }</List>
-              </Drawer>
-            ) : null }
-            <main className={ classes.content }>
-              {
-                cookie.get('token') &&
-                <div className={ classes.appBarSpacer } />
-              }
-              <div className={ classes.mainContent }>
-                <Switch>
-                  <PrivateRoute path='/' exact component={ HomePage } />
-                  <PrivateRoute path='/schools' exact component={ SchoolPage } />
-                  <PrivateRoute path='/schools/:schoolID/cost' exact component={ SchoolCostPage } />
-                  <PrivateRoute path='/students' exact component={ StudentPage } />
-                  <PrivateRoute path='/survey/:studentID' component={ SurveyPage } />
-                  <PrivateRoute path='/reports/:studentID' component={ ReportsPage } />
-                  <Route path='/login' component={ LoginPage } />
-                  <Route path='/register' component={ RegisterPage } />
-                </Switch>
+                    <Toolbar disableGutters={ !this.state.openDrawer } className={ classes.toolbar }>
+                      <IconButton
+                        color='inherit'
+                        aria-label='Open drawer'
+                        onClick={ this.handleDrawerOpen }
+                        className={ classNames(
+                          classes.menuButton,
+                          this.state.openDrawer && classes.menuButtonHidden
+                        ) }
+                      >
+                        <Icon>menu</Icon>
+                      </IconButton>
+                      <Typography variant='title' color='inherit' noWrap className={ classes.title }>
+                        IDCRA
+                      </Typography>
+                      <IconButton
+                        color='inherit'
+                        aria-label='Open right drawer'
+                        onClick={ this.handleRightDrawerOpen }
+                        className={ classNames(
+                          classes.menuButton,
+                          this.state.openRightDrawer && classes.menuButtonHidden
+                        ) }
+                      >
+                        <Icon>more_vert</Icon>
+                      </IconButton>
+                    </Toolbar>
+                  </AppBar>) : null }
+                { cookie.get('token') ? (
+                  <Drawer
+                    anchor={ 'left' }
+                    classes={ {
+                      paper: classNames(
+                        classes.drawerPaper,
+                        !this.state.openDrawer && classes.drawerPaperClose
+                      ),
+                    } }
+                    BackdropProps={ { invisible: true } }
+                    open={ this.state.openDrawer }
+                    onClose={ () => this.setState({ openDrawer: false }) }
+                  >
+                    <div className={ classes.toolbarIcon }>
+                      <IconButton style={ { color: IDCRA_THEME.TEXT } } onClick={ this.handleDrawerClose }>
+                        <Icon>close</Icon>
+                      </IconButton>
+                    </div>
+                    <Divider />
+                    <List>{ this.mainListItems() }</List>
+                  </Drawer>
+                ) : null }
+                { cookie.get('token') ? (
+                  <Drawer
+                    anchor={ 'right' }
+                    classes={ {
+                      paper: classNames(
+                        classes.rightDrawerPaper,
+                        !this.state.openRightDrawer && classes.rightDrawerPaperClose
+                      ),
+                    } }
+                    BackdropProps={ { invisible: true } }
+                    open={ this.state.openRightDrawer }
+                    onClose={ () => this.setState({ openRightDrawer: false }) }
+                  >
+                    <div className={ classes.toolbarIcon }>
+                      <IconButton style={ { color: IDCRA_THEME.TEXT } } onClick={ this.handleRightDrawerClose }>
+                        <Icon>close</Icon>
+                      </IconButton>
+                    </div>
+                    <Divider />
+                    <List>{ this.rightListItem(studentData) }</List>
+                  </Drawer>
+                ) : null }
+                <main className={ classes.content }>
+                  {
+                    cookie.get('token') &&
+                    <div className={ classes.appBarSpacer } />
+                  }
+                  <div className={ classes.mainContent }>
+                    <Switch>
+                      <PrivateRoute path='/' exact component={ HomePage } />
+                      <PrivateRoute path='/schools' exact component={ SchoolPage } />
+                      <PrivateRoute path='/schools/:schoolID/cost' exact component={ SchoolCostPage } />
+                      <PrivateRoute path='/students' exact component={ StudentPage } />
+                      <PrivateRoute path='/survey/:studentID' component={ SurveyPage } />
+                      <PrivateRoute path='/reports/:studentID' component={ ReportsPage } />
+                      <Route path='/login' component={ LoginPage } />
+                      <Route path='/register' component={ RegisterPage } />
+                    </Switch>
+                  </div>
+                </main>
               </div>
-            </main>
-          </div>
-        </React.Fragment>
+            </React.Fragment>
+          ) }
+        </StudentQuery>
       </BrowserRouter>
     );
   }

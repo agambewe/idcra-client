@@ -163,7 +163,7 @@ export default class ReportsPage extends React.Component<{}> {
                     { studentData && studentData.student && studentData.student.name
                       ? studentData.student.name
                       : '...' }{ ' ' }
-                    surveys
+                    Reports
                   </Typography>
                 </Toolbar>
               </Paper>
