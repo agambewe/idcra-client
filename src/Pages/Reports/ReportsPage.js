@@ -2,14 +2,15 @@
 import React from 'react';
 import {
   Paper,
-  Button,
   Toolbar,
   Typography,
   Tabs,
   Tab,
   ExpansionPanel,
   ExpansionPanelSummary,
-  ExpansionPanelDetails
+  ExpansionPanelDetails,
+  Icon,
+  IconButton,
 } from '@material-ui/core/';
 import moment from 'moment-timezone';
 import { Value } from 'react-values';
@@ -157,7 +158,7 @@ export default class ReportsPage extends React.Component<{}> {
         >
           { ({ data: surveysData, loading: surveysLoading }) => (
             <div>
-              <Paper style={ { marginBottom: 8 } }>
+              <Paper style={ { marginBottom: 20 } }>
                 <Toolbar>
                   <Typography variant='title'>
                     { studentData && studentData.student && studentData.student.name
@@ -176,23 +177,19 @@ export default class ReportsPage extends React.Component<{}> {
                     risk = 'medium';
                   const output = outputMap.get(risk);
                   return (
-                    <ExpansionPanel key={ edge.cursor } style={ { marginBottom: 10 } } expandIcon={ <span>Test</span> }>
+                    <ExpansionPanel key={ edge.cursor } style={ { marginBottom: 20, borderRadius: '4px' } } expandIcon={ <span>Test</span> }>
                       <ExpansionPanelSummary>
                         <Typography variant='title' style={ { flexGrow: 1 } }>
                           { moment(edge.node.createdAt).format('D MMMM YYYY') }
                         </Typography>
-                        <Button
-                          onClick={ (e: SyntheticEvent<HTMLButtonElement>) => {
-                            this.handleDownloadPDF(edge.node.id);
-                          } }
-                          variant='contained'
-                          style={ { padding: '8px 16px' } }
-
-                        >
-                          <span style={ { textAlign: 'center' } }>
-                            Download PDF
-                          </span>
-                        </Button>
+                        <div>
+                          <IconButton
+                            onClick={ (e: SyntheticEvent<HTMLButtonElement>) => {
+                              this.handleDownloadPDF(edge.node.id);
+                            } } aria-label='Download PDF'>
+                            <Icon>download</Icon>
+                          </IconButton>
+                        </div>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
                         <div style={ { display: 'flex', flexDirection: 'column' } }>

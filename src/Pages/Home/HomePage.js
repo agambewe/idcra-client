@@ -8,7 +8,8 @@ export default class HomePage extends React.Component<{}> {
     <ParentHasStudentQuery query={ ParentHasStudentQuery.query } variables={ { email: cookie.get('email') } }>
       { ({ data: parentHasStudentData, loading: parentHasStudentLoading, refetch: refetchParentHasStudent }) => {
         if (parentHasStudentData.user && parentHasStudentData.user.students.length) {
-          cookie.set('studentId', parentHasStudentData.user.students[0].id, { expires: 7 });
+          const studentIds = parentHasStudentData.user.students.map((student) => student.id);
+          cookie.set('latestStudentId', studentIds[studentIds.length - 1], { expires: 7 });
         }
         return (
           <div style={ { justifyContent: 'center', display: 'flex' } }>

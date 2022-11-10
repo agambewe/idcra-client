@@ -13,4 +13,12 @@ export default class ParentHasStudentMutation extends Mutation<*, *> {
       }
     }
   `;
+
+  static mutationRemove = gql`
+    mutation removeStudentFromParent($userId: String!, $studentId: String!) {
+      removeStudentFromParent(userId: $userId, studentId: $studentId) {
+        id
+      }
+    }
+  `;
 }

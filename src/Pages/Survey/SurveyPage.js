@@ -23,6 +23,7 @@ import StudentQuery from '../../Queries/StudentQuery';
 import DiagnosisAndActionsQuery from '../../Queries/DiagnosisAndActionsQuery';
 import CreateSurveyMutation from '../../Mutations/CreateSurveyMutation';
 import UserQuery from '../../Queries/UserQuery';
+import { IDCRA_THEME } from '../../Constant/constant';
 
 type Questions = Array<{
   question: string,
@@ -142,7 +143,7 @@ const SessionForm = (props: {
                     onClick={ () => question.low && props.onAnswer(props.session, 'Low', index) }
                     name={ `${question.question}-${question.low}` }
                     aria-label={ question.low }
-                    color='primary'
+                    style={ { color: IDCRA_THEME.PRIMARY } }
                   />
                 }
                 label={ question.low }
@@ -157,10 +158,11 @@ const SessionForm = (props: {
                     }
                     name={ `${question.question}-${question.medium}` }
                     aria-label={ question.medium }
-                    color='default'
+                    style={ { color: IDCRA_THEME.PRIMARY } }
                   />
                 }
                 label={ question.medium }
+
               />
             ) : null }
             { question.high ? (
@@ -170,7 +172,7 @@ const SessionForm = (props: {
                     onClick={ () => question.high && props.onAnswer(props.session, 'High', index) }
                     name={ `${question.question}-${question.high}` }
                     aria-label={ question.high }
-                    color='secondary'
+                    style={ { color: IDCRA_THEME.PRIMARY } }
                   />
                 }
                 label={ question.high }
@@ -245,6 +247,24 @@ class SurveyPage extends React.Component<
       });
     }, 100);
   };
+
+  removeCase = () => {
+    const { cases } = this.state;
+
+    if (cases && cases.size > 0) {
+      this.setState(state => {
+        let lastKey = [...state.cases.keys()].pop();
+        let casesCopy = new Map(state.cases);
+        casesCopy.delete(lastKey);
+        return (
+          {
+            cases: casesCopy,
+            toothNumberInput: 0,
+          }
+        )
+      });
+    }
+  }
   renderActiveSession = () => {
     switch (this.state.activeSession) {
       case 0:
@@ -356,14 +376,14 @@ class SurveyPage extends React.Component<
                       { Array.from(this.state.cases.entries()).map(
                         ([toothNumber: number, DnAID: string]) => {
                         return (
-                      <div>
+                      <div style={ { width: '100%', margin: '0 auto' } }>
                         <div
                           key={ toothNumber }
                           style={ {
                             display: 'flex',
                             flexDirection: 'row',
                             alignItems: 'baseline',
-                            justifyContent: 'space-evenly',
+                            justifyContent: 'center',
                           } }
                         >
                           <TextField
@@ -408,27 +428,42 @@ class SurveyPage extends React.Component<
                             </Select>
                           </FormControl>
                         </div>
-                        <TextField
-                          disabled
-                          value={ (() => {
-                            if (
-                              DnAData &&
-                              DnAData.diagnosisAndActions &&
-                              DnAData.diagnosisAndActions.edges
-                            ) {
-                              const edge = DnAData.diagnosisAndActions.edges.find(
-                                edge => edge && edge.node && edge.node.id === DnAID
-                              );
-                              if (edge && edge.node) {
-                                return edge.node.action;
+                        <div
+                          style={ {
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'baseline',
+                            justifyContent: 'center',
+                          } }
+                        >
+                          <TextField
+                            disabled
+                            value={ (() => {
+                              if (
+                                DnAData &&
+                                DnAData.diagnosisAndActions &&
+                                DnAData.diagnosisAndActions.edges
+                              ) {
+                                const edge = DnAData.diagnosisAndActions.edges.find(
+                                  edge => edge && edge.node && edge.node.id === DnAID
+                                );
+                                if (edge && edge.node) {
+                                  return edge.node.action;
+                                }
                               }
-                            }
-                            return 'No Action';
-                          })() }
-                          id='action'
-                          label='Action'
-                          margin='normal'
-                        />
+                              return 'No Action';
+                            })() }
+                            id='action'
+                            label='Action'
+                            margin='normal'
+                          />
+                          <Button
+                            variant='contained'
+                            onClick={ this.removeCase }
+                          >
+                            Remove Case
+                          </Button>
+                        </div>
                       </div>
                       );
                       }
@@ -459,6 +494,7 @@ class SurveyPage extends React.Component<
                               toothNumberInput: 0,
                             }));
                           } }
+                          disabled={ this.state.toothNumberInput <= 0 }
                         >
                           Add case
                         </Button>

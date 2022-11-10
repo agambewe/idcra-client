@@ -19,6 +19,7 @@ import moment from 'moment-timezone';
 import SchoolsQuery from '../../Queries/SchoolQuery';
 import linkState from 'linkstate';
 import CreateSchoolMutation from '../../Mutations/CreateSchoolMutation';
+import { Tooltip } from '@material-ui/core';
 
 const styles = theme => ({
   root: {
@@ -95,7 +96,9 @@ class SchoolPage extends React.Component<
                         <ListItemSecondaryAction>
                           <Link to={ `/schools/${node.id}/cost` }>
                             <IconButton aria-label='Cost'>
-                              <Icon>monetization_on</Icon>
+                              <Tooltip title='Cost'>
+                                <Icon>monetization_on</Icon>
+                              </Tooltip>
                             </IconButton>
                           </Link>
                         </ListItemSecondaryAction>

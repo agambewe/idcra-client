@@ -42,7 +42,22 @@ const theme = createMuiTheme({
           },
         }
       }
-    }
+    },
+    MuiStepIcon: {
+      root: {
+        '&$active': {
+          color: IDCRA_THEME.PRIMARY,
+        },
+        '&$completed': {
+          color: IDCRA_THEME.PRIMARY,
+        }
+      },
+    },
+    MuiPaper: {
+      root: {
+        backgroundColor: IDCRA_THEME.CARD_CONTAINER,
+      }
+    },
   }
 });
 
