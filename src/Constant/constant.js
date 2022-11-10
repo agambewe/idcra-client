@@ -12,7 +12,7 @@ export const IDCRA_THEME = {
   TEXT: '#FFF',
   APP_BAR: '#5858BB',
   CARD_TITLE: '#7E7AAF',
-  CARD_CONTAINER: '#FFCED4',
+  CARD_CONTAINER: '#C5E8F5',
 }
 
 export const SNACKBAR = {

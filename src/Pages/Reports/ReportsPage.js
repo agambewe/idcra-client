@@ -13,6 +13,7 @@ import {
   IconButton,
 } from '@material-ui/core/';
 import moment from 'moment-timezone';
+import { API_URL } from '../../Constant/constant';
 import { Value } from 'react-values';
 import {
   BarChart,
@@ -142,7 +143,7 @@ const outputMap: Map<string, Output> = new Map([
 export default class ReportsPage extends React.Component<{}> {
   handleDownloadPDF = id => {
     console.log(id);
-    window.open('https://idcra.radityakertiyasa.com/reports/surveys/' + id + '.pdf');
+    window.open(`${API_URL}/reports/surveys/` + id + '.pdf');
   };
   render = () => (
     <StudentQuery
