@@ -126,36 +126,38 @@ class StudentPage extends React.Component<
               </div> :
               addedAsChild ?
                 <div>
-                  <IconButton
-                    onClick={
-                      () => {
-                        const selectedStudentId = node.id;
-                        const userId = userData.user.id || null;
-                        const studentId = selectedStudentId || null;
-                        if (userId && studentId) {
-                          removeStudent({
-                            variables: {
-                              userId: userId,
-                              studentId: studentId
-                            },
-                          }).then(() => {
-                          }).catch((err) => {
-                            if (err.message) {
-                              let inlineMessage = {
-                                show: true,
-                                message: 'There is something wrong, please try again!'
-                              };
-                              this.setState({ inlineMessage });
-                            }
-                          });
+                  { cookie.get('role') === ROLES.ADMIN &&
+                    <IconButton
+                      onClick={
+                        () => {
+                          const selectedStudentId = node.id;
+                          const userId = userData.user.id || null;
+                          const studentId = selectedStudentId || null;
+                          if (userId && studentId) {
+                            removeStudent({
+                              variables: {
+                                userId: userId,
+                                studentId: studentId
+                              },
+                            }).then(() => {
+                            }).catch((err) => {
+                              if (err.message) {
+                                let inlineMessage = {
+                                  show: true,
+                                  message: 'There is something wrong, please try again!'
+                                };
+                                this.setState({ inlineMessage });
+                              }
+                            });
+                          }
+                          refetchParentHasStudent()
                         }
-                        refetchParentHasStudent()
-                      }
-                    } aria-label='Remove Child'>
-                    <Tooltip title='Remove Child'>
-                      <Icon>remove_circle</Icon>
-                    </Tooltip>
-                  </IconButton>
+                      } aria-label='Remove Child'>
+                      <Tooltip title='Remove Child'>
+                        <Icon>remove_circle</Icon>
+                      </Tooltip>
+                    </IconButton>
+                  }
                   <Link to={ `/reports/${node.id}` }>
                     <IconButton aria-label='Report'>
                       <Tooltip title='Report'>
