@@ -38,6 +38,7 @@ const styles = theme => ({
     justifyContent: 'center',
     borderRadius: '4px',
     width: '100%',
+    backgroundColor: '#FFF',
     [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
       width: 400,
     }
