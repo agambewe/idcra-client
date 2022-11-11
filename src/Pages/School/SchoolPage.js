@@ -20,6 +20,7 @@ import SchoolsQuery from '../../Queries/SchoolQuery';
 import linkState from 'linkstate';
 import CreateSchoolMutation from '../../Mutations/CreateSchoolMutation';
 import { Tooltip } from '@material-ui/core';
+import { API_URL } from '../../Constant/constant';
 
 const styles = theme => ({
   root: {
@@ -40,6 +41,10 @@ class SchoolPage extends React.Component<
 > {
   state = {
     newSchoolName: '',
+  };
+  handleDownloadZip = id => {
+    console.log(id);
+    window.open(`${API_URL}/reports/school/` + id + '.zip');
   };
   render = () => {
     // $FlowFixMe
@@ -101,6 +106,14 @@ class SchoolPage extends React.Component<
                               </Tooltip>
                             </IconButton>
                           </Link>
+                          <IconButton
+                            onClick={ (e: SyntheticEvent<HTMLButtonElement>) => {
+                              this.handleDownloadZip(node.id);
+                            } } aria-label='Download Schools Zip'>
+                            <Tooltip title='Download Schools Zip'>
+                              <Icon>download</Icon>
+                            </Tooltip>
+                          </IconButton>
                         </ListItemSecondaryAction>
                       </ListItem>
                     );
