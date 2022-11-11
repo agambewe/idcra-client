@@ -129,68 +129,72 @@ const SessionForm = (props: {
   activeQuestion: number,
   onAnswer: (number, string, number) => void,
   onFinish: () => void,
+  onClickBack: (number) => void,
 }) => (
-  <Stepper activeStep={ props.activeQuestion } orientation='vertical'>
-    { props.questions.map((question, index) => (
-      <Step key={ question.question }>
-        <StepLabel>{ question.question }</StepLabel>
-        <StepContent>
-          <FormGroup style={ { paddingLeft: 24, paddingRight: 24 } } row>
-            { question.low ? (
-              <FormControlLabel
-                control={
-                  <Radio
-                    onClick={ () => question.low && props.onAnswer(props.session, 'Low', index) }
-                    name={ `${question.question}-${question.low}` }
-                    aria-label={ question.low }
-                    style={ { color: IDCRA_THEME.PRIMARY } }
-                  />
-                }
-                label={ question.low }
-              />
-            ) : null }
-            { question.medium ? (
-              <FormControlLabel
-                control={
-                  <Radio
-                    onClick={ () =>
-                      question.medium && props.onAnswer(props.session, 'Medium', index)
-                    }
-                    name={ `${question.question}-${question.medium}` }
-                    aria-label={ question.medium }
-                    style={ { color: IDCRA_THEME.PRIMARY } }
-                  />
-                }
-                label={ question.medium }
+  <div>
+    <Stepper activeStep={ props.activeQuestion } orientation='vertical'>
+      { props.questions.map((question, index) => (
+        <Step key={ question.question } >
+          <StepLabel>{ question.question }</StepLabel>
+          <StepContent>
+            <FormGroup style={ { paddingLeft: 24, paddingRight: 24 } } row>
+              { question.low ? (
+                <FormControlLabel
+                  control={
+                    <Radio
+                      onClick={ () => question.low && props.onAnswer(props.session, 'Low', index) }
+                      name={ `${question.question}-${question.low}` }
+                      aria-label={ question.low }
+                      style={ { color: IDCRA_THEME.PRIMARY } }
+                    />
+                  }
+                  label={ question.low }
+                />
+              ) : null }
+              { question.medium ? (
+                <FormControlLabel
+                  control={
+                    <Radio
+                      onClick={ () =>
+                        question.medium && props.onAnswer(props.session, 'Medium', index)
+                      }
+                      name={ `${question.question}-${question.medium}` }
+                      aria-label={ question.medium }
+                      style={ { color: IDCRA_THEME.PRIMARY } }
+                    />
+                  }
+                  label={ question.medium }
 
-              />
-            ) : null }
-            { question.high ? (
-              <FormControlLabel
-                control={
-                  <Radio
-                    onClick={ () => question.high && props.onAnswer(props.session, 'High', index) }
-                    name={ `${question.question}-${question.high}` }
-                    aria-label={ question.high }
-                    style={ { color: IDCRA_THEME.PRIMARY } }
-                  />
-                }
-                label={ question.high }
-              />
-            ) : null }
-          </FormGroup>
+                />
+              ) : null }
+              { question.high ? (
+                <FormControlLabel
+                  control={
+                    <Radio
+                      onClick={ () => question.high && props.onAnswer(props.session, 'High', index) }
+                      name={ `${question.question}-${question.high}` }
+                      aria-label={ question.high }
+                      style={ { color: IDCRA_THEME.PRIMARY } }
+                    />
+                  }
+                  label={ question.high }
+                />
+              ) : null }
+            </FormGroup>
+          </StepContent>
+        </Step>
+      )) }
+      <Step>
+        <StepLabel>Selesai</StepLabel>
+        <StepContent>
+          <Button variant='contained' onClick={ props.onFinish }>
+            Next
+          </Button>
         </StepContent>
       </Step>
-    )) }
-    <Step>
-      <StepLabel>Selesai</StepLabel>
-      <StepContent>
-        <Button variant='contained' onClick={ props.onFinish }>
-          Next
-        </Button>
-      </StepContent>
-    </Step>
-  </Stepper>
+    </Stepper >
+    {/* <Button disabled={ props.session < 1 } variant='contained' onClick={ () => props.onClickBack(props.session) }>Back</Button> */ }
+  </div>
 );
 
 class SurveyPage extends React.Component<
@@ -238,6 +242,7 @@ class SurveyPage extends React.Component<
   };
   answer = (session: number, answer: string, index: number) => {
     const sessionCounterName = `activeQuestion${session}`;
+    console.log(this.state);
     setTimeout(() => {
       requestAnimationFrame(() => {
         this.setState(state => ({
@@ -247,6 +252,17 @@ class SurveyPage extends React.Component<
       });
     }, 100);
   };
+
+  onClickBack = (session: number) => {
+    const sessionCounterName = `activeQuestion${session}`;
+    setTimeout(() => {
+      requestAnimationFrame(() => {
+        this.setState(state => ({
+          [sessionCounterName]: state[sessionCounterName] - 1,
+        }));
+      });
+    }, 100);
+  }
 
   removeCase = () => {
     const { cases } = this.state;
@@ -293,6 +309,7 @@ class SurveyPage extends React.Component<
             onFinish={ () => {
               this.setState({ activeSession: 2 });
             } }
+            onClickBack={ this.onClickBack }
           />
         );
 
@@ -306,6 +323,7 @@ class SurveyPage extends React.Component<
             onFinish={ () => {
               this.setState({ activeSession: 3 });
             } }
+            onClickBack={ this.onClickBack }
           />
         );
 
@@ -383,7 +401,7 @@ class SurveyPage extends React.Component<
                             display: 'flex',
                             flexDirection: 'row',
                             alignItems: 'baseline',
-                            justifyContent: 'center',
+                            justifyContent: 'space-evenly',
                           } }
                         >
                           <TextField
@@ -392,6 +410,7 @@ class SurveyPage extends React.Component<
                             value={ toothNumber }
                             type='number'
                             margin='normal'
+                            disabled={ toothNumber }
                           />
                           <FormControl style={ { minWidth: 200, margin: 10 } }>
                             <InputLabel htmlFor='diagnosis'>Diagnosis</InputLabel>
@@ -433,7 +452,7 @@ class SurveyPage extends React.Component<
                             display: 'flex',
                             flexDirection: 'row',
                             alignItems: 'baseline',
-                            justifyContent: 'center',
+                            justifyContent: 'space-evenly',
                           } }
                         >
                           <TextField
@@ -603,19 +622,19 @@ render = () => (
           </Typography>
         </Toolbar>
         <Stepper activeStep={ this.state.activeSession } orientation='horizontal' style={ { overflowX: 'auto' } }>
-          <Step>
+          <Step onClick={ () => this.setState({ activeSession: 1 }) }>
             <StepLabel>Get Ready!</StepLabel>
           </Step>
-          <Step>
+          <Step onClick={ () => this.setState({ activeSession: 2 }) }>
             <StepLabel>Contributing Conditions</StepLabel>
           </Step>
-          <Step>
+          <Step onClick={ () => this.setState({ activeSession: 3 }) }>
             <StepLabel>Clinical Conditions</StepLabel>
           </Step>
-          <Step>
+          <Step onClick={ () => this.setState({ activeSession: 4 }) }>
             <StepLabel>Assessment</StepLabel>
           </Step>
-          <Step>
+          <Step onClick={ () => this.setState({ activeSession: 5 }) }>
             <StepLabel>Result</StepLabel>
           </Step>
         </Stepper>

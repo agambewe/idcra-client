@@ -1,5 +1,5 @@
 // config
-// const HOST = '127.0.0.1:3000';
+// const HOST = 'localhost:3000';
 const HOST = 'idcra.domcloud.io';
 
 export const API_URL = `https://${HOST}`;
@@ -10,7 +10,7 @@ export const IDCRA_THEME = {
   SECONDARY: '#745098',
   TERTIARY: '#B88FE1',
   TEXT: '#FFF',
-  APP_BAR: '#5858BB',
+  APP_BAR: '#5858B5',
   CARD_TITLE: '#7E7AAF',
   CARD_CONTAINER: '#C5E8F5',
 }

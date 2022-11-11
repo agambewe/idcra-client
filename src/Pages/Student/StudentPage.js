@@ -38,6 +38,7 @@ import UserQuery from '../../Queries/UserQuery';
 import CreateStudentMutation from '../../Mutations/CreateStudentMutation';
 import ParentHasStudentMutation from '../../Mutations/ParentHasStudentMutation';
 import CustomSnackbar from '../../Common/Snackbar';
+import CustomPagination from '../../Common/Pagination';
 
 const styles = theme => ({
   root: {
@@ -73,6 +74,9 @@ class StudentPage extends React.Component<
       show: false,
       message: '',
     },
+    currentPage: 1,
+    oldStudentsQueryAfter: null,
+    studentsQueryAfter: null,
   };
 
   handleCloseDialog = () => {
@@ -193,6 +197,7 @@ class StudentPage extends React.Component<
   render = () => {
     // $FlowFixMe
     const { classes } = this.props;
+    const { currentPage } = this.state;
 
     return (
       <SchoolsQuery query={ SchoolsQuery.query } variables={ { first: 30 } }>
@@ -202,6 +207,7 @@ class StudentPage extends React.Component<
             query={ StudentsQuery.query }
             variables={ {
               first: 30,
+              after: this.state.studentsQueryAfter,
               schoolID: this.state.activeSchoolId,
               keyword: this.state.searchStudentName,
             } }
@@ -347,18 +353,41 @@ class StudentPage extends React.Component<
                           </Toolbar>
                           <ParentHasStudentMutation mutation={ ParentHasStudentMutation.mutationRemove }>
                             { (removeStudent, { loading: removeStudentLoading }) => (
-                              <List>
-                                { studentsData && studentsData.students ?
-                                  this.renderStudentsData(studentsData, parentHasStudentData, userData, refetchParentHasStudent, removeStudent) :
-                                  (
-                                    <ListItem>
-                                      <ListItemText primary={ 'There is no student in this school' } />
-                                    </ListItem>
-                                  )
-                                }
-                              </List>
+                              <div>
+                                <List>
+                                  { studentsData && studentsData.students ?
+                                    <div>
+                                      { this.renderStudentsData(studentsData, parentHasStudentData, userData, refetchParentHasStudent, removeStudent) }
+                                      < CustomPagination
+                                        currentPage={ currentPage }
+                                        setCurrentPage={ (nextIndex) => {
+                                          if (studentsData.students.pageInfo) {
+                                            const nextPage = studentsData.students.pageInfo.endCursor;
+                                            const prevPage = this.state.oldStudentsQueryAfter;
+                                            const studsQueryAfter = this.state.studentsQueryAfter;
+                                            const doubleSteps = currentPage !== nextIndex - 1 || currentPage !== nextIndex + 2;
+                                            if (currentPage < nextIndex) {
+                                              this.setState({ studentsQueryAfter: nextPage });
+                                            } else {
+                                              this.setState({ studentsQueryAfter: prevPage });
+                                            }
+                                            this.setState({ oldStudentsQueryAfter: !doubleSteps ? studsQueryAfter : prevPage, currentPage: nextIndex });
+                                            refetchStudents();
+                                          }
+                                        } }
+                                      />
+                                    </div>
+                                    :
+                                    (
+                                      <ListItem>
+                                        <ListItemText primary={ 'There is no student in this school' } />
+                                      </ListItem>
+                                    )
+                                  }
+                                </List>
+                              </div>
                             ) }
-                          </ParentHasStudentMutation>
+                          </ParentHasStudentMutation >
 
                           <ParentHasStudentMutation mutation={ ParentHasStudentMutation.mutation }>
                             { (addStudent, { loading: addStudentLoading }) => (

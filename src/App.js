@@ -16,8 +16,8 @@ import {
   Icon,
   Typography,
   Divider,
-  IconButton,
-  Tooltip
+  Button,
+  Avatar
 } from '@material-ui/core/';
 import {
   BrowserRouter,
@@ -60,31 +60,38 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   />
 );
 
-const drawerWidth = 240;
+const drawerWidth = 280;
 
 const styles = theme => ({
   root: {
     display: 'flex',
+  },
+  toolbar: {
+    paddingRight: 24,
   },
   toolbarIcon: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: '0 8px',
-    background: IDCRA_THEME.APP_BAR,
+    background: '#FFF',
     ...theme.mixins.toolbar,
   },
   appBar: {
-    left: '0',
-    width: '98vw',
-    margin: '5px auto',
-    borderRadius: '50px',
     background: IDCRA_THEME.APP_BAR,
     color: IDCRA_THEME.TEXT,
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
     }),
   },
   menuButton: {
@@ -97,32 +104,12 @@ const styles = theme => ({
   title: {
     flexGrow: 1,
   },
-  drawerPaper: {
-    overflowX: 'hidden',
-    position: 'absolute',
-    top: '10vh',
-    left: '2vw',
-    height: 'auto',
-    maxHeight: '50vh',
+  drawer: {
     width: drawerWidth,
-    whiteSpace: 'nowrap',
-    borderRadius: '8px',
-    backgroundColor: '#FFF',
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
+    flexShrink: 0,
   },
-  rightDrawerPaper: {
-    overflowX: 'hidden',
-    position: 'absolute',
-    top: '10vh',
-    right: '2vw',
-    height: 'auto',
-    maxHeight: '50vh',
+  drawerPaper: {
     width: drawerWidth,
-    whiteSpace: 'nowrap',
-    borderRadius: '8px',
     backgroundColor: '#FFF',
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
@@ -139,38 +126,46 @@ const styles = theme => ({
       width: theme.spacing.unit * 9,
     },
   },
-  rightDrawerPaperClose: {
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: theme.spacing.unit * 7,
-    [theme.breakpoints.up('sm')]: {
-      width: theme.spacing.unit * 9,
-    },
-  },
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    height: '100%',
+    padding: theme.spacing.unit * 3,
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: -drawerWidth,
+  },
+  contentShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
   },
   mainContent: {
-    width: '96vw',
-    height: '90vh',
-    padding: theme.spacing.unit,
-    margin: '10px auto',
+    width: '100%',
+    left: '0',
+    right: '0',
+    position: 'absolute',
+    margin: '0 auto',
+    padding: '0 5px',
+    [theme.breakpoints.up('sm')]: {
+      width: '85%',
+      padding: '0',
+    },
   },
-  chartContainer: {
-    marginLeft: -22,
+  rightNavbarText: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '10px'
   },
-  tableContainer: {
-    height: 320,
+  avatar: {
+    margin: 10,
+    backgroundColor: '#FFAC1C',
   },
-  listText: {
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis'
-  }
 });
 
 class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
@@ -270,51 +265,27 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
     )
   };
 
-  rightListItem = () => {
-    const { classes } = this.props;
-    const userEmail = cookie.get('email');
-    const userName = userEmail.split('@');
-
-    return (
-      <div>
-        <ListItem>
-          <ListItemIcon>
-            <Icon>person</Icon>
-          </ListItemIcon>
-          <Tooltip title={ userName[0].toUpperCase() }>
-
-            <ListItemText className={ classes.listText } primary={ userName[0].toUpperCase() } />
-          </Tooltip>
-        </ListItem>
-        <ListItem button onClick={ this.handleLogout }>
-          <ListItemIcon>
-            <Icon>logout</Icon>
-          </ListItemIcon>
-          <ListItemText primary='Logout' />
-        </ListItem>
-      </div>
-    )
-  }
-
   render() {
     // $FlowFixMe
     const { classes } = this.props;
+    const username = cookie.get('email').split('@');
+    const firstLetter = username[0].substring(0, 1);
 
     return (
       <BrowserRouter>
         <React.Fragment>
-          <CssBaseline />
           <div className={ classes.root }>
+            <CssBaseline />
             { cookie.get('token') ? (
               <AppBar
-                position='absolute'
+                position='fixed'
                 className={ classNames(
                   classes.appBar,
                   cookie.get('token') && this.state.openDrawer && classes.appBarShift
                 ) }
               >
                 <Toolbar disableGutters={ !this.state.openDrawer } className={ classes.toolbar }>
-                  <IconButton
+                  <Button
                     color='inherit'
                     aria-label='Open drawer'
                     onClick={ this.handleDrawerOpen }
@@ -324,26 +295,32 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
                     ) }
                   >
                     <Icon>menu</Icon>
-                  </IconButton>
+                  </Button>
                   <Typography variant='title' color='inherit' noWrap className={ classes.title }>
                     IDCRA
                   </Typography>
-                  <IconButton
-                    color='inherit'
-                    aria-label='Open right drawer'
-                    onClick={ this.handleRightDrawerOpen }
-                    className={ classNames(
-                      classes.menuButton,
-                      this.state.openRightDrawer && classes.menuButtonHidden
-                    ) }
-                  >
-                    <Icon>more_vert</Icon>
-                  </IconButton>
+                  { cookie.get('token') ? (
+                    <div className={ classes.rightNavbarText }>
+                      <Avatar alt="Profile Pict" className={ classes.avatar }>{ firstLetter }</Avatar>
+                      <Typography variant='title' color='inherit' noWrap className={ classes.title }>
+                        Hi, { username[0] }
+                      </Typography>
+                      <Button
+                        onClick={ this.handleLogout }
+                        color='inherit'
+                        aria-label='Logout'
+                        className={ classes.button }
+                      >
+                        <Icon>logout</Icon>
+                      </Button>
+                    </div>
+                  ) : null }
                 </Toolbar>
               </AppBar>) : null }
             { cookie.get('token') ? (
               <Drawer
                 anchor={ 'left' }
+                variant='persistent'
                 classes={ {
                   paper: classNames(
                     classes.drawerPaper,
@@ -355,42 +332,30 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
                 onClose={ () => this.setState({ openDrawer: false }) }
               >
                 <div className={ classes.toolbarIcon }>
-                  <IconButton style={ { color: IDCRA_THEME.TEXT } } onClick={ this.handleDrawerClose }>
-                    <Icon>close</Icon>
-                  </IconButton>
+                  <Button style={ { color: '#000' } } onClick={ this.handleDrawerClose }>
+                    <Icon>chevron_left</Icon>
+                  </Button>
                 </div>
                 <Divider />
                 <List>{ this.mainListItems() }</List>
               </Drawer>
             ) : null }
-            { cookie.get('token') ? (
-              <Drawer
-                anchor={ 'right' }
-                classes={ {
-                  paper: classNames(
-                    classes.rightDrawerPaper,
-                    !this.state.openRightDrawer && classes.rightDrawerPaperClose
-                  ),
-                } }
-                BackdropProps={ { invisible: true } }
-                open={ this.state.openRightDrawer }
-                onClose={ () => this.setState({ openRightDrawer: false }) }
-              >
-                <div className={ classes.toolbarIcon }>
-                  <IconButton style={ { color: IDCRA_THEME.TEXT } } onClick={ this.handleRightDrawerClose }>
-                    <Icon>close</Icon>
-                  </IconButton>
-                </div>
-                <Divider />
-                <List>{ this.rightListItem() }</List>
-              </Drawer>
-            ) : null }
-            <main className={ classes.content }>
+            <main
+              className={ classNames(
+                classes.content,
+                cookie.get('token') && this.state.openDrawer && classes.contentShift
+              ) }
+            >
               {
                 cookie.get('token') &&
                 <div className={ classes.appBarSpacer } />
               }
-              <div className={ classes.mainContent }>
+              <div
+                className={ classNames(
+                  classes.mainContent,
+                  cookie.get('token') && this.state.openDrawer && classes.mainContentOpen
+                ) }
+              >
                 <Switch>
                   <PrivateRoute path='/' exact component={ HomePage } />
                   <PrivateRoute path='/schools' exact component={ SchoolPage } />
