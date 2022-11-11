@@ -12,6 +12,7 @@ import {
   InputLabel,
   Paper,
   Typography,
+  FormHelperText
 } from '@material-ui/core/';
 import CustomSnackbar from '../../Common/Snackbar';
 import RegisterMutation from '../../Mutations/RegisterMutation';
@@ -62,6 +63,9 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing.unit * 3,
   },
+  confirmPassText: {
+    color: SNACKBAR.ERROR,
+  }
 });
 
 class RegisterPage extends Component<
@@ -148,7 +152,14 @@ class RegisterPage extends Component<
                     type='password'
                     error={ !this.state.confirmPassword.match(this.state.password) }
                     id='confirm-password'
+                    aria-describedby='confirm-pass-helper-text'
+                    inputProps={ {
+                      'aria-label': 'confirm-password',
+                    } }
                   />
+                  <FormHelperText id="confirm-pass-helper-text" className={ this.props.classes.confirmPassText }>
+                    { !this.state.confirmPassword.match(this.state.password) && `Password doesn't match!` }
+                  </FormHelperText>
                 </FormControl>
                 <Button
                   type='submit'
