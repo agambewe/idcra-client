@@ -44,7 +44,7 @@ class SchoolPage extends React.Component<
   };
   handleDownloadZip = id => {
     console.log(id);
-    window.open(`${API_URL}/reports/school/` + id + '.zip');
+    window.open(`${API_URL}/reports/school/` + id);
   };
   render = () => {
     // $FlowFixMe
