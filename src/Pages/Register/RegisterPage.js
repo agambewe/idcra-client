@@ -75,8 +75,9 @@ class RegisterPage extends Component<
   }
 > {
   state = {
-    email: null,
-    password: null,
+    email: '',
+    password: '',
+    confirmPassword: '',
     loading: false,
     inlineMessage: {
       show: false,
@@ -132,17 +133,32 @@ class RegisterPage extends Component<
                 <FormControl margin='normal' required fullWidth>
                   <InputLabel htmlFor='password'>Password</InputLabel>
                   <Input
+                    required
                     onChange={ linkState(this, 'password') }
                     name='password'
                     type='password'
                     id='password'
                   />
                 </FormControl>
+                <FormControl margin='normal' required fullWidth>
+                  <InputLabel htmlFor='confirm-password'>Confirm Password</InputLabel>
+                  <Input
+                    onChange={ linkState(this, 'confirmPassword') }
+                    name='confirm-password'
+                    type='password'
+                    error={ !this.state.confirmPassword.match(this.state.password) }
+                    id='confirm-password'
+                  />
+                </FormControl>
                 <Button
                   type='submit'
                   fullWidth
                   variant='raised'
-                  disabled={ this.state.email === '' || this.state.password === '' }
+                  disabled={
+                    this.state.email === '' ||
+                    this.state.password === '' ||
+                    !this.state.confirmPassword.match(this.state.password)
+                  }
                   className={ this.props.classes.submit }
                   onClick={
                     (e: SyntheticEvent<HTMLButtonElement>) => {

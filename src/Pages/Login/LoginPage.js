@@ -84,8 +84,8 @@ class LoginPage extends Component<
   }
 > {
   state = {
-    email: null,
-    password: null,
+    email: '',
+    password: '',
     loading: false,
     inlineMessage: {
       show: false,
