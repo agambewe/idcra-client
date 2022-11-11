@@ -66,10 +66,9 @@ const styles = theme => ({
   },
   registerLink: {
     marginBottom: '10px',
-    textDecoration: 'underline',
-    color: 'blue',
     padding: '5px',
     textAlign: 'left',
+    textDecoration: 'underline'
   }
 });
 

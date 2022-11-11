@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import linkState from 'linkstate';
 import { SNACKBAR } from '../../Constant/constant';
 import { withStyles } from '@material-ui/core/styles/';
@@ -66,6 +66,12 @@ const styles = theme => ({
   confirmPassText: {
     color: SNACKBAR.ERROR,
   },
+  loginLink: {
+    marginBottom: '10px',
+    padding: '5px',
+    textAlign: 'left',
+    textDecoration: 'underline'
+  }
 });
 
 class RegisterPage extends Component<
@@ -226,6 +232,11 @@ class RegisterPage extends Component<
                   { this.state.loading ? 'REGISTERING...' : 'REGISTER' }
                 </Button>
               </form>
+              <Link to={ `/login` }>
+                <Typography className={ this.props.classes.loginLink } variant='body2'>
+                  Already have an account? click here to login.
+                </Typography>
+              </Link>
             </Paper>
           </main>
         </React.Fragment>
