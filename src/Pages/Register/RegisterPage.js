@@ -81,13 +81,15 @@ class RegisterPage extends Component<
     inlineMessage: {
       show: false,
       message: '',
-    }
+      color: '',
+    },
   };
 
   resetSnackbar = () => {
     const inlineMessage = {
       show: false,
-      message: ''
+      message: '',
+      color: '',
     };
 
     this.setState({ inlineMessage });
@@ -105,7 +107,7 @@ class RegisterPage extends Component<
                 open={ this.state.inlineMessage.show }
                 close={ () => this.resetSnackbar() }
                 contentStyle={ {
-                  backgroundColor: SNACKBAR.ERROR,
+                  backgroundColor: this.state.inlineMessage.color,
                   width: '100%',
                   borderRadius: '4px',
                 } }
@@ -153,12 +155,21 @@ class RegisterPage extends Component<
                           },
                         }).then(() => {
                           // $FlowFixMe
-                          this.props.history.push('/login');
+                          const inlineMessage = {
+                            show: true,
+                            message: 'Your account has been successfully created!',
+                            color: SNACKBAR.SUCCESS,
+                          };
+
+                          this.setState({ inlineMessage });
+                          setTimeout(() => (this.props.history.push('/login')), 1000);
+
                         }).catch((err) => {
                           if (err.message.includes('1062')) {
                             const inlineMessage = {
                               show: true,
-                              message: 'Username already exist!'
+                              message: 'Username already exist!',
+                              color: SNACKBAR.ERROR,
                             };
 
                             this.setState({ inlineMessage });
@@ -167,7 +178,8 @@ class RegisterPage extends Component<
                       } else {
                         const inlineMessage = {
                           show: true,
-                          message: 'Please fill out all the empty fields!'
+                          message: 'Please fill out all the empty fields!',
+                          color: SNACKBAR.ERROR,
                         };
 
                         this.setState({

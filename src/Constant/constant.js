@@ -16,7 +16,8 @@ export const IDCRA_THEME = {
 }
 
 export const SNACKBAR = {
-  ERROR: '#A10000'
+  ERROR: '#A10000',
+  SUCCESS: '#4A934A'
 }
 
 export const ROLES = {

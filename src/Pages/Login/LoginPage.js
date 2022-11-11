@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import linkState from 'linkstate';
 import axios from 'axios';
 import cookie from 'js-cookie';
@@ -63,6 +63,13 @@ const styles = theme => ({
   },
   submit: {
     marginTop: theme.spacing.unit * 3,
+  },
+  registerLink: {
+    marginBottom: '10px',
+    textDecoration: 'underline',
+    color: 'blue',
+    padding: '5px',
+    textAlign: 'left',
   }
 });
 
@@ -199,6 +206,11 @@ class LoginPage extends Component<
               { this.state.loading ? 'LOGGING IN...' : 'LOGIN' }
             </Button>
           </form>
+          <Link to={ `/register` }>
+            <Typography className={ this.props.classes.registerLink } variant='body2'>
+              Doesn't have any account? click here to register.
+            </Typography>
+          </Link>
         </Paper>
       </main>
     </React.Fragment>
