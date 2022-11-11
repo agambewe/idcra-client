@@ -1,8 +1,8 @@
 // config
-const HOST = '127.0.0.1:3000';
-// const HOST = 'idcra.radityakertiyasa.com';
+// const HOST = '127.0.0.1:3000';
+const HOST = 'idcra.domcloud.io';
 
-export const API_URL = `http://${HOST}`;
+export const API_URL = `https://${HOST}`;
 
 // color
 export const IDCRA_THEME = {
