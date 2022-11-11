@@ -90,6 +90,7 @@ class LoginPage extends Component<
     inlineMessage: {
       show: false,
       message: '',
+      color: '',
     }
   };
 
@@ -116,12 +117,22 @@ class LoginPage extends Component<
           if (data.hasOwnProperty('role')) {
             cookie.set('role', data.role, { expires: 7 });
           }
-          window.location = '/';
+          const inlineMessage = {
+            show: true,
+            message: 'Login success!',
+            color: SNACKBAR.SUCCESS,
+          };
+
+          this.setState({
+            loading: false, inlineMessage
+          });
+          setTimeout(() => (window.location = '/'), 1000);
         }
       } else {
         const inlineMessage = {
           show: true,
-          message: 'Please fill out all the empty fields!'
+          message: 'Please fill out all the empty fields!',
+          color: SNACKBAR.ERROR,
         };
 
         this.setState({
@@ -130,10 +141,10 @@ class LoginPage extends Component<
         });
       }
     } catch (error) {
-
       const inlineMessage = {
         show: true,
-        message: 'Wrong username or password!'
+        message: 'Wrong username or password!',
+        color: SNACKBAR.ERROR,
       };
 
       this.setState({
@@ -146,7 +157,8 @@ class LoginPage extends Component<
   resetSnackbar = () => {
     const inlineMessage = {
       show: false,
-      message: ''
+      message: '',
+      color: '',
     };
 
     this.setState({ inlineMessage });
@@ -161,7 +173,7 @@ class LoginPage extends Component<
             open={ this.state.inlineMessage.show }
             close={ () => this.resetSnackbar() }
             contentStyle={ {
-              backgroundColor: SNACKBAR.ERROR,
+              backgroundColor: this.state.inlineMessage.color,
               width: '100%',
               borderRadius: '4px',
             } }

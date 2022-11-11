@@ -65,7 +65,7 @@ const styles = theme => ({
   },
   confirmPassText: {
     color: SNACKBAR.ERROR,
-  }
+  },
 });
 
 class RegisterPage extends Component<
@@ -153,6 +153,7 @@ class RegisterPage extends Component<
                     error={ !this.state.confirmPassword.match(this.state.password) }
                     id='confirm-password'
                     aria-describedby='confirm-pass-helper-text'
+                    className={ this.props.classes.input }
                     inputProps={ {
                       'aria-label': 'confirm-password',
                     } }
@@ -174,6 +175,7 @@ class RegisterPage extends Component<
                   onClick={
                     (e: SyntheticEvent<HTMLButtonElement>) => {
                       e.preventDefault();
+                      this.setState({ loading: true });
                       if (this.state.email && this.state.password) {
                         register({
                           variables: {
@@ -188,7 +190,9 @@ class RegisterPage extends Component<
                             color: SNACKBAR.SUCCESS,
                           };
 
-                          this.setState({ inlineMessage });
+                          this.setState({
+                            loading: false, inlineMessage
+                          });
                           setTimeout(() => (this.props.history.push('/login')), 1000);
 
                         }).catch((err) => {
@@ -199,7 +203,10 @@ class RegisterPage extends Component<
                               color: SNACKBAR.ERROR,
                             };
 
-                            this.setState({ inlineMessage });
+                            this.setState({
+                              loading: false,
+                              inlineMessage
+                            });
                           }
                         });
                       } else {
