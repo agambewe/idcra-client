@@ -11,8 +11,8 @@ export const IDCRA_THEME = {
   TERTIARY: '#B88FE1',
   TEXT: '#FFF',
   APP_BAR: '#5858B5',
-  CARD_TITLE: '#7E7AAF',
-  CARD_CONTAINER: '#C5E8F5',
+  CARD_CONTAINER: '#E6DBED',
+  CARD_TITLE: '#DAECF6',
 }
 
 export const SNACKBAR = {

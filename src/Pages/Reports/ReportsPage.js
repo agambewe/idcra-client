@@ -12,6 +12,7 @@ import {
   Icon,
   IconButton,
 } from '@material-ui/core/';
+import { withStyles } from '@material-ui/core/styles';
 import moment from 'moment-timezone';
 import { API_URL } from '../../Constant/constant';
 import { Value } from 'react-values';
@@ -140,11 +141,35 @@ const outputMap: Map<string, Output> = new Map([
   ['high', highOutput],
 ]);
 
-export default class ReportsPage extends React.Component<{}> {
+const styles = theme => ({
+  dataContainer: {
+    padding: '10px',
+    backgroundColor: 'white',
+  },
+  cardContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    width: '100%',
+  },
+  rowCardContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px',
+    justifyContent: 'center',
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      flexDirection: 'row',
+    }
+  }
+});
+
+class ReportsPage extends React.Component<{}> {
   handleDownloadPDF = id => {
     console.log(id);
     window.open(`${API_URL}/reports/surveys/` + id + '.pdf');
   };
+
   render = () => (
     <StudentQuery
       query={ StudentQuery.query }
@@ -193,175 +218,189 @@ export default class ReportsPage extends React.Component<{}> {
                         </div>
                       </ExpansionPanelSummary>
                       <ExpansionPanelDetails>
-                        <div style={ { display: 'flex', flexDirection: 'column' } }>
-                          <BarChart
-                            width={ 280 }
-                            height={ 280 }
-                            data={ [
-                              {
-                                name: 'Risk',
-                                value: edge.node.subjectiveScore,
-                                label: `${edge.node.subjectiveScore}%`,
-                              },
-                            ] }
-                          >
-                            <XAxis dataKey='name'>
-                              <Label
-                                value='Subjective Caries Assessment'
-                                offset={ -2 }
-                                position='insideBottom'
-                              />
-                            </XAxis>
-                            <YAxis
-                              type='number'
-                              unit='%'
-                              ticks={ [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100] }
-                            />
-                            <Tooltip />
-                            <Bar
-                              dataKey='value'
-                              fill={ (() => {
-                                if (risk === 'low') return 'green';
-                                if (risk === 'medium') return 'orange';
-                                return 'red';
-                              })() }
-                            >
-                              <LabelList dataKey='label' position='top' />
-                            </Bar>
-                          </BarChart>
+                        <div className={ this.props.classes.cardContainer }>
+                          <div className={ this.props.classes.rowCardContainer }>
+                            <Paper className={ this.props.classes.dataContainer }>
+                              <BarChart
+                                width={ 280 }
+                                height={ 280 }
+                                data={ [
+                                  {
+                                    name: 'Risk',
+                                    value: edge.node.subjectiveScore,
+                                    label: `${edge.node.subjectiveScore}%`,
+                                  },
+                                ] }
+                              >
+                                <XAxis dataKey='name'>
+                                  <Label
+                                    value='Subjective Caries Assessment'
+                                    offset={ -2 }
+                                    position='insideBottom'
+                                  />
+                                </XAxis>
+                                <YAxis
+                                  type='number'
+                                  unit='%'
+                                  ticks={ [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100] }
+                                />
+                                <Tooltip />
+                                <Bar
+                                  dataKey='value'
+                                  fill={ (() => {
+                                    if (risk === 'low') return 'green';
+                                    if (risk === 'medium') return 'orange';
+                                    return 'red';
+                                  })() }
+                                >
+                                  <LabelList dataKey='label' position='top' />
+                                </Bar>
+                              </BarChart>
+                            </Paper>
+                            <br />
+                            <Paper className={ this.props.classes.dataContainer }>
+                              <BarChart
+                                width={ 280 }
+                                height={ 280 }
+                                data={ [
+                                  {
+                                    name: 'D',
+                                    value: edge.node.upperD,
+                                  },
+                                  {
+                                    name: 'M',
+                                    value: edge.node.upperM,
+                                  },
+                                  {
+                                    name: 'F',
+                                    value: edge.node.upperF,
+                                  },
+                                ] }
+                              >
+                                <XAxis dataKey='name'>
+                                  <Label
+                                    value='Objective Caries Assessment'
+                                    offset={ -2 }
+                                    position='insideBottom'
+                                  />
+                                </XAxis>
+                                <YAxis type='number' />
+                                <Tooltip />
+                                <Bar dataKey='value' fill='red'>
+                                  <LabelList position='top' />
+                                </Bar>
+                              </BarChart>
+                            </Paper>
+                          </div>
                           <br />
-                          <BarChart
-                            width={ 280 }
-                            height={ 280 }
-                            data={ [
-                              {
-                                name: 'D',
-                                value: edge.node.upperD,
-                              },
-                              {
-                                name: 'M',
-                                value: edge.node.upperM,
-                              },
-                              {
-                                name: 'F',
-                                value: edge.node.upperF,
-                              },
-                            ] }
-                          >
-                            <XAxis dataKey='name'>
-                              <Label
-                                value='Objective Caries Assessment'
-                                offset={ -2 }
-                                position='insideBottom'
-                              />
-                            </XAxis>
-                            <YAxis type='number' />
-                            <Tooltip />
-                            <Bar dataKey='value' fill='red'>
-                              <LabelList position='top' />
-                            </Bar>
-                          </BarChart>
-                          <br />
+
                           { output ? (
                             <div style={ { padding: 24 } }>
-                              <Typography variant='headline'>Operator's Suggestions</Typography>
-                              <ul>
-                                { Object.keys(output.operator).map(key => (
-                                  <li>
-                                    <Typography>
-                                      { key.toUpperCase() }: { output.operator[key] }
-                                    </Typography>
-                                  </li>
-                                )) }
-                              </ul>
-                              <Typography variant='headline'>Parent's Suggestions</Typography>
-                              <Value defaultValue={ 0 }>
-                                { ({ value, set }) => (
-                                  <div>
-                                    <Tabs
-                                      value={ value }
-                                      onChange={ (_, index) => {
-                                        set(index);
-                                      } }
-                                      centered
-                                      indicatorColor='primary'
-                                      textColor='primary'
-                                    >
-                                      <Tab label='reminder' />
-                                      <Tab label='guidance' />
-                                      <Tab label='supervision' />
-                                    </Tabs>
-                                    <div style={ { display: 'flex', justifyContent: 'center' } }>
-                                      { value === 0 ? (
-                                        <ul>
-                                          { output.parent.reminder.map(reminder => (
-                                            <li key={ reminder }>
-                                              <Typography>{ reminder }</Typography>
-                                            </li>
-                                          )) }
-                                        </ul>
-                                      ) : null }
-                                      { value === 1 ? (
-                                        <ul>
-                                          { output.parent.guidance.map(guidance => (
-                                            <li key={ guidance }>
-                                              <Typography>{ guidance }</Typography>
-                                            </li>
-                                          )) }
-                                        </ul>
-                                      ) : null }
-                                      { value === 2 ? (
-                                        <ul>
-                                          { output.parent.supervision.map(supervision => (
-                                            <li key={ supervision }>
-                                              <Typography>{ supervision }</Typography>
-                                            </li>
-                                          )) }
-                                        </ul>
-                                      ) : null }
-                                    </div>
-                                  </div>
-                                ) }
-                              </Value>
-                              <Typography variant='headline'>Teacher's Suggestions</Typography>
-                              <Value defaultValue={ 0 }>
-                                { ({ value, set }) => (
-                                  <div>
-                                    <Tabs
-                                      value={ value }
-                                      onChange={ (_, index) => {
-                                        set(index);
-                                      } }
-                                      centered
-                                      indicatorColor='primary'
-                                      textColor='primary'
-                                    >
-                                      <Tab label='reminder' />
-                                      <Tab label='guidance' />
-                                    </Tabs>
-                                    <div style={ { display: 'flex', justifyContent: 'center' } }>
-                                      { value === 0 ? (
-                                        <ul>
-                                          { output.teacher.reminder.map(reminder => (
-                                            <li key={ reminder }>
-                                              <Typography>{ reminder }</Typography>
-                                            </li>
-                                          )) }
-                                        </ul>
-                                      ) : null }
-                                      { value === 1 ? (
-                                        <ul>
-                                          { output.teacher.guidance.map(guidance => (
-                                            <li key={ guidance }>
-                                              <Typography>{ guidance }</Typography>
-                                            </li>
-                                          )) }
-                                        </ul>
-                                      ) : null }
-                                    </div>
-                                  </div>
-                                ) }
-                              </Value>
+                              <div className={ this.props.classes.rowCardContainer }>
+                                <Paper className={ this.props.classes.dataContainer }>
+                                  <Typography variant='headline'>Operator's Suggestions</Typography>
+                                  <ul>
+                                    { Object.keys(output.operator).map(key => (
+                                      <li>
+                                        <Typography>
+                                          { key.toUpperCase() }: { output.operator[key] }
+                                        </Typography>
+                                      </li>
+                                    )) }
+                                  </ul>
+                                </Paper>
+                                <br />
+                                <Paper className={ this.props.classes.dataContainer }>
+                                  <Typography variant='headline'>Parent's Suggestions</Typography>
+                                  <Value defaultValue={ 0 }>
+                                    { ({ value, set }) => (
+                                      <div>
+                                        <Tabs
+                                          value={ value }
+                                          onChange={ (_, index) => {
+                                            set(index);
+                                          } }
+                                          centered
+                                          indicatorColor='primary'
+                                          textColor='primary'
+                                        >
+                                          <Tab label='reminder' />
+                                          <Tab label='guidance' />
+                                          <Tab label='supervision' />
+                                        </Tabs>
+                                        <div style={ { display: 'flex', justifyContent: 'center' } }>
+                                          { value === 0 ? (
+                                            <ul>
+                                              { output.parent.reminder.map(reminder => (
+                                                <li key={ reminder }>
+                                                  <Typography>{ reminder }</Typography>
+                                                </li>
+                                              )) }
+                                            </ul>
+                                          ) : null }
+                                          { value === 1 ? (
+                                            <ul>
+                                              { output.parent.guidance.map(guidance => (
+                                                <li key={ guidance }>
+                                                  <Typography>{ guidance }</Typography>
+                                                </li>
+                                              )) }
+                                            </ul>
+                                          ) : null }
+                                          { value === 2 ? (
+                                            <ul>
+                                              { output.parent.supervision.map(supervision => (
+                                                <li key={ supervision }>
+                                                  <Typography>{ supervision }</Typography>
+                                                </li>
+                                              )) }
+                                            </ul>
+                                          ) : null }
+                                        </div>
+                                      </div>
+                                    ) }
+                                  </Value>
+                                  <Typography variant='headline'>Teacher's Suggestions</Typography>
+                                  <Value defaultValue={ 0 }>
+                                    { ({ value, set }) => (
+                                      <div>
+                                        <Tabs
+                                          value={ value }
+                                          onChange={ (_, index) => {
+                                            set(index);
+                                          } }
+                                          centered
+                                          indicatorColor='primary'
+                                          textColor='primary'
+                                        >
+                                          <Tab label='reminder' />
+                                          <Tab label='guidance' />
+                                        </Tabs>
+                                        <div style={ { display: 'flex', justifyContent: 'center' } }>
+                                          { value === 0 ? (
+                                            <ul>
+                                              { output.teacher.reminder.map(reminder => (
+                                                <li key={ reminder }>
+                                                  <Typography>{ reminder }</Typography>
+                                                </li>
+                                              )) }
+                                            </ul>
+                                          ) : null }
+                                          { value === 1 ? (
+                                            <ul>
+                                              { output.teacher.guidance.map(guidance => (
+                                                <li key={ guidance }>
+                                                  <Typography>{ guidance }</Typography>
+                                                </li>
+                                              )) }
+                                            </ul>
+                                          ) : null }
+                                        </div>
+                                      </div>
+                                    ) }
+                                  </Value>
+                                </Paper>
+                              </div>
                             </div>
                           ) : null }
                           <br />
@@ -409,3 +448,5 @@ export default class ReportsPage extends React.Component<{}> {
     </StudentQuery >
   );
 }
+
+export default withStyles(styles)(ReportsPage);

@@ -206,6 +206,7 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
   mainListItems = () => {
     return (
       <div>
+        <span style={ { color: '#B0B0B0', fontWeight: 'bold', padding: '5px', fontSize: '18px' } }>Dashboard</span>
         { cookie.get('role') !== ROLES.PARENT &&
           <NavigationLink to='/schools'>
             { isActive => (
