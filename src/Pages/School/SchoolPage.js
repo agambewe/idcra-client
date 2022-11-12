@@ -20,7 +20,7 @@ import SchoolsQuery from '../../Queries/SchoolQuery';
 import linkState from 'linkstate';
 import CreateSchoolMutation from '../../Mutations/CreateSchoolMutation';
 import { Tooltip } from '@material-ui/core';
-import { API_URL } from '../../Constant/constant';
+import { API_URL, IDCRA_THEME } from '../../Constant/constant';
 
 const styles = theme => ({
   root: {
@@ -55,7 +55,10 @@ class SchoolPage extends React.Component<
           <div>
             <CreateSchoolMutation mutation={ CreateSchoolMutation.mutation }>
               { (create, { loading: creatingSchool }) => (
-                <Paper style={ { padding: 20 } }>
+                <Paper style={ { padding: 20, backgroundColor: IDCRA_THEME.CARD_TITLE } }>
+                  <Typography style={ { margin: '10 0' } } variant='title' id='tableTitle'>
+                    New School
+                  </Typography>
                   <FormControl>
                     <InputLabel htmlFor='name-simple'>New School Name</InputLabel>
                     <Input id='name-simple' onChange={ linkState(this, 'newSchoolName') } />

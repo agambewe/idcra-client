@@ -5,7 +5,7 @@ import moment from 'moment-timezone';
 import debounce from 'debounce';
 import linkState from 'linkstate';
 import cookie from 'js-cookie';
-import { ROLES, SNACKBAR } from '../../Constant/constant';
+import { IDCRA_THEME, ROLES, SNACKBAR } from '../../Constant/constant';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Paper,
@@ -220,7 +220,7 @@ class StudentPage extends React.Component<
                       <div>
                         <CreateStudentMutation mutation={ CreateStudentMutation.mutation }>
                           { (create, { loading: createStudentLoading }) => (
-                            <Paper style={ { padding: 15, marginBottom: 20 } }>
+                            <Paper style={ { padding: 15, marginBottom: 20, backgroundColor: IDCRA_THEME.CARD_TITLE } }>
                               {
                                 this.state.inlineMessage.message &&
                                 <CustomSnackbar
@@ -241,6 +241,7 @@ class StudentPage extends React.Component<
                               <FormControl style={ { minWidth: 200, margin: 10 } }>
                                 <InputLabel htmlFor='school'>School Name</InputLabel>
                                 <Select
+                                  style={ { backgroundColor: IDCRA_THEME.CARD_TITLE } }
                                   onChange={ e => {
                                     this.setState({ activeSchoolId: e.target.value });
                                   } }
@@ -251,7 +252,7 @@ class StudentPage extends React.Component<
                                   } }
                                 >
                                   { schoolsLoading ? (
-                                    <MenuItem value=''>
+                                    <MenuItem value='' style={ { backgroundColor: IDCRA_THEME.CARD_TITLE } }>
                                       <em>Loading schools..</em>
                                     </MenuItem>
                                   ) : null }
@@ -259,7 +260,7 @@ class StudentPage extends React.Component<
                                     ? schoolsData.schools.edges.map(edge => {
                                       if (!edge || !edge.node) return null;
                                       return (
-                                        <MenuItem key={ edge.node.id } value={ edge.node.id }>
+                                        <MenuItem key={ edge.node.id } value={ edge.node.id } style={ { backgroundColor: IDCRA_THEME.CARD_TITLE } }>
                                           { edge.node.name }
                                         </MenuItem>
                                       );
