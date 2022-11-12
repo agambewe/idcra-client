@@ -60,6 +60,19 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   />
 );
 
+const PrivateRouteMainToLogin = ({ component: Component, ...rest }) => (
+  <Route
+    { ...rest }
+    render={ props =>
+      !cookie.get('token') ? (
+        <Component { ...props } />
+      ) : (
+        <Redirect to={ { pathname: '/', state: { from: props.location } } } />
+      )
+    }
+  />
+);
+
 const drawerWidth = 280;
 
 const styles = theme => ({
@@ -365,8 +378,8 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
                   <PrivateRoute path='/students' exact component={ StudentPage } />
                   <PrivateRoute path='/survey/:studentID' component={ SurveyPage } />
                   <PrivateRoute path='/reports/:studentID' component={ ReportsPage } />
-                  <Route path='/login' component={ LoginPage } />
-                  <Route path='/register' component={ RegisterPage } />
+                  <PrivateRouteMainToLogin path='/login' component={ LoginPage } />
+                  <PrivateRouteMainToLogin path='/register' component={ RegisterPage } />
                 </Switch>
               </div>
             </main>
