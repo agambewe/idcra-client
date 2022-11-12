@@ -145,6 +145,7 @@ const styles = theme => ({
   },
   mainContent: {
     width: '100%',
+    height: '100vh',
     left: '0',
     right: '0',
     position: 'absolute',
@@ -269,8 +270,8 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
   render() {
     // $FlowFixMe
     const { classes } = this.props;
-    const username = cookie.get('email').split('@');
-    const firstLetter = username[0].substring(0, 1);
+    const username = cookie.get('email') ? cookie.get('email').split('@') : [];
+    const firstLetter = username.length ? username[0].substring(0, 1) : '';
 
     return (
       <BrowserRouter>
