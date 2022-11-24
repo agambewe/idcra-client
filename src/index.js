@@ -58,6 +58,11 @@ const theme = createMuiTheme({
         backgroundColor: IDCRA_THEME.CARD_CONTAINER,
       }
     },
+    MuiList: {
+      root: {
+        padding: '0px !important',
+      }
+    }
   }
 });
 

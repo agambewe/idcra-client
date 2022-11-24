@@ -60,24 +60,28 @@ class StudentPage extends React.Component<
     searchStudentName: string,
   }
 > {
-  state = {
-    activeSchoolId: '',
-    name: '',
-    dateOfBirth: '',
-    searchStudentName: '',
-    openDialog: false,
-    selectedStudent: {
-      id: null,
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeSchoolId: '',
       name: '',
-    },
-    inlineMessage: {
-      show: false,
-      message: '',
-    },
-    currentPage: 1,
-    oldStudentsQueryAfter: null,
-    studentsQueryAfter: null,
-  };
+      dateOfBirth: '',
+      searchStudentName: '',
+      openDialog: false,
+      selectedStudent: {
+        id: null,
+        name: '',
+      },
+      inlineMessage: {
+        show: false,
+        message: '',
+      },
+      currentPage: 1,
+      oldStudentsQueryAfter: [],
+      studentsQueryAfter: null,
+      disableNext: false,
+    };
+  }
 
   handleCloseDialog = () => {
     this.setState({ openDialog: false });
@@ -197,7 +201,7 @@ class StudentPage extends React.Component<
   render = () => {
     // $FlowFixMe
     const { classes } = this.props;
-    const { currentPage } = this.state;
+    const { currentPage, disableNext } = this.state;
 
     return (
       <SchoolsQuery query={ SchoolsQuery.query } variables={ { first: 30 } }>
@@ -275,7 +279,7 @@ class StudentPage extends React.Component<
                                   </Typography>
 
                                   <form display={ { display: 'flex', flexWrap: 'wrap' } }>
-                                    <FormControl style={ { margin: 10 } } disabled={ !this.state.activeSchoolId }>
+                                    <FormControl style={ { margin: '0 10px 5px' } } disabled={ !this.state.activeSchoolId }>
                                       <InputLabel htmlFor='student-name'>Name</InputLabel>
                                       <Input
                                         value={ this.state.name }
@@ -358,22 +362,44 @@ class StudentPage extends React.Component<
                                 <List>
                                   { studentsData && studentsData.students ?
                                     <div>
-                                      { this.renderStudentsData(studentsData, parentHasStudentData, userData, refetchParentHasStudent, removeStudent) }
+                                      { this.renderStudentsData(
+                                        studentsData,
+                                        parentHasStudentData,
+                                        userData,
+                                        refetchParentHasStudent,
+                                        removeStudent,
+                                      ) }
                                       < CustomPagination
+                                        disableNext={ disableNext }
                                         currentPage={ currentPage }
                                         setCurrentPage={ (nextIndex) => {
                                           if (studentsData.students.pageInfo) {
+                                            const studentsQueryAfter = this.state.studentsQueryAfter;
+                                            const oldStudentsQueryAfter = this.state.oldStudentsQueryAfter;
+                                            const endPage = studentsData.students.edges.length < 30;
+                                            let updatedOldStudentsQueryAfter = [...oldStudentsQueryAfter];
+
                                             const nextPage = studentsData.students.pageInfo.endCursor;
-                                            const prevPage = this.state.oldStudentsQueryAfter;
-                                            const studsQueryAfter = this.state.studentsQueryAfter;
-                                            const doubleSteps = currentPage !== nextIndex - 1 || currentPage !== nextIndex + 2;
-                                            if (currentPage < nextIndex) {
-                                              this.setState({ studentsQueryAfter: nextPage });
-                                            } else {
-                                              this.setState({ studentsQueryAfter: prevPage });
+                                            const prevPage = oldStudentsQueryAfter.length ?
+                                              oldStudentsQueryAfter[oldStudentsQueryAfter.length - 1] :
+                                              studentsData.students.pageInfo.endCursor;
+                                            this.setState({ disableNext: endPage });
+
+                                            if (nextIndex > 0) {
+                                              if (currentPage < nextIndex && !endPage) {
+                                                this.setState({ studentsQueryAfter: nextPage });
+                                                if (studentsQueryAfter) {
+                                                  updatedOldStudentsQueryAfter.push(studentsQueryAfter);
+                                                } else {
+                                                  updatedOldStudentsQueryAfter.push(null);
+                                                }
+                                              } else if (currentPage > nextIndex) {
+                                                this.setState({ studentsQueryAfter: prevPage });
+                                                updatedOldStudentsQueryAfter.pop();
+                                              }
+                                              this.setState({ oldStudentsQueryAfter: updatedOldStudentsQueryAfter, currentPage: nextIndex });
+                                              refetchStudents();
                                             }
-                                            this.setState({ oldStudentsQueryAfter: !doubleSteps ? studsQueryAfter : prevPage, currentPage: nextIndex });
-                                            refetchStudents();
                                           }
                                         } }
                                       />

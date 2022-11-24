@@ -199,7 +199,7 @@ class RegisterPage extends Component<
                           this.setState({
                             loading: false, inlineMessage
                           });
-                          setTimeout(() => (this.props.history.push('/login')), 1000);
+                          setTimeout(() => (this.props.history.push('/login')), 500);
 
                         }).catch((err) => {
                           if (err.message.includes('1062')) {

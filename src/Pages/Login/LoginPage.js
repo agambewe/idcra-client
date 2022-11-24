@@ -125,7 +125,7 @@ class LoginPage extends Component<
           this.setState({
             loading: false, inlineMessage
           });
-          setTimeout(() => (window.location = '/'), 1000);
+          setTimeout(() => (window.location = '/'), 500);
         }
       } else {
         const inlineMessage = {
@@ -219,7 +219,7 @@ class LoginPage extends Component<
           </form>
           <Link to={ `/register` }>
             <Typography className={ this.props.classes.registerLink } variant='body2'>
-              Doesn't have any account? click here to register.
+              Don't have an account? click here to register.
             </Typography>
           </Link>
         </Paper>

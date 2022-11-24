@@ -4,7 +4,11 @@ import { Button } from '@material-ui/core';
 // import { IDCRA_THEME } from '../Constant/constant';
 
 const CustomPagination = (props) => {
-  const { currentPage, setCurrentPage } = props;
+  const {
+    currentPage,
+    setCurrentPage,
+    // disableNext
+  } = props;
   // const pageNumbers = [...Array(nPages + 1).keys()].slice(1);
   const nextPage = () => {
     // if (currentPage !== nPages)
@@ -30,7 +34,7 @@ const CustomPagination = (props) => {
       } }>
         <li>
           <Button
-            // disabled={ currentPage <= 1 && currentPage !== }
+            disabled={ currentPage <= 1 }
             variant='contained'
             onClick={ prevPage }
           >
@@ -62,7 +66,7 @@ const CustomPagination = (props) => {
         } */}
         <li>
           <Button
-            // disabled={ currentPage < 1 }
+            // disabled={ disableNext }
             variant='contained'
             onClick={ nextPage }
           >
@@ -79,11 +83,13 @@ export default CustomPagination;
 CustomPagination.propTypes = {
   nPages: PropTypes.number,
   currentPage: PropTypes.number,
-  setCurrentPage: PropTypes.func
+  setCurrentPage: PropTypes.func,
+  disableNext: PropTypes.bool,
 }
 
 CustomPagination.defaultProps = {
   nPages: 1,
   currentPage: 1,
   setCurrentPage: () => { },
+  disableNext: false,
 }
