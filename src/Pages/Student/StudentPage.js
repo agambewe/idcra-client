@@ -376,17 +376,17 @@ class StudentPage extends React.Component<
                                           if (studentsData.students.pageInfo) {
                                             const studentsQueryAfter = this.state.studentsQueryAfter;
                                             const oldStudentsQueryAfter = this.state.oldStudentsQueryAfter;
-                                            const endPage = studentsData.students.edges.length < 30;
+                                            const hasNextPage = studentsData.students.pageInfo.hasNextPage;
                                             let updatedOldStudentsQueryAfter = [...oldStudentsQueryAfter];
 
                                             const nextPage = studentsData.students.pageInfo.endCursor;
                                             const prevPage = oldStudentsQueryAfter.length ?
                                               oldStudentsQueryAfter[oldStudentsQueryAfter.length - 1] :
                                               studentsData.students.pageInfo.endCursor;
-                                            this.setState({ disableNext: endPage });
+                                            this.setState({ disableNext: !hasNextPage });
 
                                             if (nextIndex > 0) {
-                                              if (currentPage < nextIndex && !endPage) {
+                                              if (currentPage < nextIndex && hasNextPage) {
                                                 this.setState({ studentsQueryAfter: nextPage });
                                                 if (studentsQueryAfter) {
                                                   updatedOldStudentsQueryAfter.push(studentsQueryAfter);

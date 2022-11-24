@@ -17,7 +17,8 @@ import {
   Typography,
   Divider,
   Button,
-  Avatar
+  Avatar,
+  Hidden,
 } from '@material-ui/core/';
 import {
   BrowserRouter,
@@ -257,7 +258,7 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
         ) }
       </NavigationLink>
     } */}
-
+        {/* 
         { cookie.get('role') === ROLES.PARENT &&
           <NavigationLink
             // temporary hack
@@ -275,7 +276,7 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
               </ListItem>
             ) }
           </NavigationLink>
-        }
+        } */}
       </div >
     )
   };
@@ -316,10 +317,12 @@ class Dashboard extends React.Component<{}, { openDrawer: boolean }> {
                   </Typography>
                   { cookie.get('token') ? (
                     <div className={ classes.rightNavbarText }>
-                      <Avatar alt="Profile Pict" className={ classes.avatar }>{ firstLetter }</Avatar>
-                      <Typography variant='title' color='inherit' noWrap className={ classes.title }>
-                        Hi, { username[0] }
-                      </Typography>
+                      <Avatar title={ `Hi, ${username[0]}` } alt="Profile Pict" className={ classes.avatar }>{ firstLetter }</Avatar>
+                      <Hidden smDown>
+                        <Typography variant='title' color='inherit' noWrap className={ classes.title }>
+                          Hi, { username[0] }
+                        </Typography>
+                      </Hidden>
                       <Button
                         onClick={ this.handleLogout }
                         color='inherit'
