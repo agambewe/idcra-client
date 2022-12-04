@@ -1,6 +1,6 @@
 // config
 // const HOST = 'localhost:3000';
-const HOST = 'idcra.domcloud.io';
+const HOST = 'idcra.umy.ac.id:3000';
 
 export const API_URL = `https://${HOST}`;
 
