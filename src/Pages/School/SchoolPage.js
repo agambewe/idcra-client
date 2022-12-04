@@ -42,9 +42,18 @@ class SchoolPage extends React.Component<
   state = {
     newSchoolName: '',
   };
-  handleDownloadZip = id => {
+  handleDownloadZip = (id) => {
     console.log(id);
-    window.open(`${API_URL}/reports/school/` + id);
+    const url = process.env.PUBLIC_URL;
+    const fileUrl = `${url}/reports`;
+    console.log(url);
+
+    const downloadWindow = window.open(`${API_URL}/reports/school/` + id);
+    const a = document.createElement('a');
+    a.setAttribute('href', fileUrl);
+    a.download = 'file.zip';
+    a.click();
+    downloadWindow.close();
   };
   render = () => {
     // $FlowFixMe
