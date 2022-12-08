@@ -42,9 +42,13 @@ class SchoolPage extends React.Component<
   state = {
     newSchoolName: '',
   };
-  handleDownloadZip = id => {
+  handleDownloadSchoolsZip = id => {
     console.log(id);
     window.open(`${API_URL}/reports/school/` + id);
+  };
+  handleDownloadSurveysZip = id => {
+    console.log(id);
+    window.open(`${API_URL}/reports/surveys/school/` + id);
   };
   render = () => {
     // $FlowFixMe
@@ -111,10 +115,18 @@ class SchoolPage extends React.Component<
                           </Link>
                           <IconButton
                             onClick={ (e: SyntheticEvent<HTMLButtonElement>) => {
-                              this.handleDownloadZip(node.id);
+                              this.handleDownloadSchoolsZip(node.id);
                             } } aria-label='Download Schools Zip'>
                             <Tooltip title='Download Schools Zip'>
                               <Icon>download</Icon>
+                            </Tooltip>
+                          </IconButton>
+                          <IconButton
+                            onClick={ (e: SyntheticEvent<HTMLButtonElement>) => {
+                              this.handleDownloadSurveysZip(node.id);
+                            } } aria-label='Download Surveys Zip'>
+                            <Tooltip title='Download Surveys Zip'>
+                              <Icon>assignment_returned</Icon>
                             </Tooltip>
                           </IconButton>
                         </ListItemSecondaryAction>
