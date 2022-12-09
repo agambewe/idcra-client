@@ -52,7 +52,7 @@ class SchoolPage extends React.Component<
     console.log(id);
     const question1List = questions1.map((q) => q.question);
     const question2List = questions2.map((q) => q.question);
-    const questionsLists = JSON.stringify([...question1List, ...question2List]);
+    const questionsLists = JSON.stringify({ questions: [...question1List, ...question2List] });
 
     axios.post(API_URL + '/reports/surveys/school/' + id, questionsLists, {
       headers: {
