@@ -23,7 +23,8 @@ import StudentQuery from '../../Queries/StudentQuery';
 import DiagnosisAndActionsQuery from '../../Queries/DiagnosisAndActionsQuery';
 import CreateSurveyMutation from '../../Mutations/CreateSurveyMutation';
 import UserQuery from '../../Queries/UserQuery';
-import { IDCRA_THEME } from '../../Constant/constant';
+import { API_URL, IDCRA_THEME } from '../../Constant/constant';
+import axios from 'axios';
 
 type Questions = Array<{
   question: string,
@@ -233,6 +234,27 @@ class SurveyPage extends React.Component<
     cases: (new Map(): Map<number, string>),
     toothNumberInput: 0,
   };
+
+  componentDidMount() {
+    this.saveQuestionsToDb();
+  }
+
+  saveQuestionsToDb = () => {
+    const question1List = questions1.map((q) => q.question);
+    const question2List = questions2.map((q) => q.question);
+    const questionsList = [...question1List, ...question2List];
+    const bodyFormData = new FormData();
+    questionsList.forEach((item) => {
+      bodyFormData.append('question', item);
+    })
+    axios.post(API_URL + '/reports/surveys/school/', bodyFormData)
+    .then((response) => {
+      console.log(response);
+    }, (error) => {
+      console.log(error);
+    });
+  }
+
   setInput = (type: 'number' | 'string', statePath: string) => (
     e: SyntheticEvent<HTMLInputElement>
   ) => {
