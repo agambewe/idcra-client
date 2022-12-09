@@ -21,6 +21,8 @@ import linkState from 'linkstate';
 import CreateSchoolMutation from '../../Mutations/CreateSchoolMutation';
 import { Tooltip } from '@material-ui/core';
 import { API_URL, IDCRA_THEME } from '../../Constant/constant';
+import { questions1, questions2 } from '../../Data/questions';
+import axios from 'axios';
 
 const styles = theme => ({
   root: {
@@ -48,7 +50,21 @@ class SchoolPage extends React.Component<
   };
   handleDownloadSurveysZip = id => {
     console.log(id);
-    window.open(`${API_URL}/reports/surveys/school/` + id);
+    const question1List = questions1.map((q) => q.question);
+    const question2List = questions2.map((q) => q.question);
+    const questionsList = [...question1List, ...question2List];
+    const bodyFormData = new FormData();
+    questionsList.forEach((item) => {
+      bodyFormData.append('question', item);
+    })
+
+    axios.post(API_URL + '/reports/surveys/school/' + id, bodyFormData)
+      .then((response) => {
+        window.open(`${API_URL}/reports/surveys/school/` + id);
+        console.log(response);
+      }, (error) => {
+        console.log(error);
+      });
   };
   render = () => {
     // $FlowFixMe
