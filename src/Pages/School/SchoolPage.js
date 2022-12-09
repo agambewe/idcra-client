@@ -52,13 +52,13 @@ class SchoolPage extends React.Component<
     console.log(id);
     const question1List = questions1.map((q) => q.question);
     const question2List = questions2.map((q) => q.question);
-    const questionsList = [...question1List, ...question2List];
-    const bodyFormData = new FormData();
-    questionsList.forEach((item) => {
-      bodyFormData.append('question', item);
-    })
+    const questionsLists = JSON.stringify([...question1List, ...question2List]);
 
-    axios.post(API_URL + '/reports/surveys/school/' + id, bodyFormData)
+    axios.post(API_URL + '/reports/surveys/school/' + id, questionsLists, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
       .then((response) => {
         window.open(`${API_URL}/reports/surveys/school/` + id);
         console.log(response);
