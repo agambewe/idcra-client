@@ -50,7 +50,29 @@ class SchoolPage extends React.Component<
   };
   handleDownloadSurveysZip = id => {
     console.log(id);
-    const questionsLists = JSON.stringify({ questions: [...questions1, ...questions2] });
+    const question1List = questions1.map((q) => {
+      let list = {};
+      const question = q.question;
+      let answer = {};
+      if (q.low) answer.low = q.low;
+      if (q.medium) answer.medium = q.medium;
+      if (q.high) answer.high = q.high;
+      list = { question, answer };
+
+      return list;
+    })
+    const question2List = questions2.map((q) => {
+      let list = {};
+      const question = q.question;
+      let answer = {};
+      if (q.low) answer.low = q.low;
+      if (q.medium) answer.medium = q.medium;
+      if (q.high) answer.high = q.high;
+      list = { question, answer };
+
+      return list;
+    })
+    const questionsLists = JSON.stringify({ questions: [...question1List, ...question2List] });
 
     axios.post(API_URL + '/reports/surveys/school/' + id, questionsLists, {
       headers: {
