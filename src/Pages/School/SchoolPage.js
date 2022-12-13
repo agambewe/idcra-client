@@ -74,13 +74,12 @@ class SchoolPage extends React.Component<
     })
     const questionsLists = JSON.stringify({ school_id: id, questions: [...question1List, ...question2List] });
 
-    axios.post(API_URL + '/reports/surveys/school', questionsLists, {
+    axios.post(API_URL + '/reports/surveys/school/', questionsLists, {
       headers: {
-        'Content-Type': 'application/json'
       }
     })
       .then((response) => {
-        window.open(`${API_URL}/reports/surveys/school`);
+        window.open(`${API_URL}/reports/surveys/school/` + id);
         console.log(response);
       }, (error) => {
         console.log(error);
